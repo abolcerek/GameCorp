@@ -7,6 +7,8 @@ public class FallingAsteroid : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.isGameOver) return;
+
         transform.Translate(Vector2.down * fallSpeed * Time.deltaTime);
 
         // Use the variable instead of hard-coded -6
@@ -22,6 +24,17 @@ public class FallingAsteroid : MonoBehaviour
         {
             Destroy(gameObject);      // destroy the asteroid
             Destroy(other.gameObject); // destroy the bullet
+        }
+        else if (other.CompareTag("Player"))
+        {
+            // Handle collision with player (e.g., reduce player health)
+            // Assuming the player has a script with a method called TakeDamage
+            Player_Health player = other.GetComponent<Player_Health>();
+            if (player != null)
+            {
+                player.TakeDamage(1); // Reduce player health by 1
+            }
+            Destroy(gameObject); // destroy the asteroid
         }
     }
 }

@@ -20,6 +20,7 @@ public class AsteroidSpawner : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.isGameOver) return;
         timer += Time.deltaTime;
         if (timer >= spawnRate)
         {
