@@ -227,6 +227,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FallingAsteroid
   fallSpeed: 5
   destroyY: -6
+  health: 1
+  mediumAsteroidPrefab: {fileID: 0}
+  smallAsteroidPrefab: {fileID: 0}
 --- !u!1 &6858925335585071635
 GameObject:
   m_ObjectHideFlags: 0

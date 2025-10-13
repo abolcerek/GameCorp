@@ -10,7 +10,9 @@ public class FallingAsteroid : MonoBehaviour
     public int health = 1;
 
     [Header("Asteroid Prefabs")]
-    public GameObject mediumAsteroidPrefab; // ✅ assign in Inspector (only needed for large)
+    public GameObject mediumAsteroidPrefab; // used by large asteroids
+    public GameObject smallAsteroidPrefab;  // used by medium asteroids
+
 
     void Update()
     {
@@ -48,30 +50,39 @@ public class FallingAsteroid : MonoBehaviour
     void TakeDamage(int dmg)
     {
         health -= dmg;
+
         if (health <= 0)
         {
-            // ✅ If this is a large asteroid, spawn 2 medium ones
+            // ✅ Large asteroid breaks into 2 mediums
             if (mediumAsteroidPrefab != null && gameObject.name.Contains("Large"))
             {
-                SpawnMediumAsteroids();
+                SpawnChildAsteroids(mediumAsteroidPrefab);
+            }
+            // ✅ Medium asteroid breaks into 2 smalls
+            else if (smallAsteroidPrefab != null && gameObject.name.Contains("Medium"))
+            {
+                SpawnChildAsteroids(smallAsteroidPrefab);
             }
 
             Destroy(gameObject);
         }
     }
 
-    void SpawnMediumAsteroids()
+    void SpawnChildAsteroids(GameObject prefab)
     {
+        if (prefab == null) return;
+
         Vector3 pos1 = transform.position + new Vector3(-0.5f, 0.3f, 0f);
         Vector3 pos2 = transform.position + new Vector3(0.5f, 0.3f, 0f);
 
-        GameObject obj1 = Instantiate(mediumAsteroidPrefab, pos1, Quaternion.identity);
-        GameObject obj2 = Instantiate(mediumAsteroidPrefab, pos2, Quaternion.identity);
+        GameObject obj1 = Instantiate(prefab, pos1, Quaternion.identity);
+        GameObject obj2 = Instantiate(prefab, pos2, Quaternion.identity);
 
         Rigidbody2D rb1 = obj1.GetComponent<Rigidbody2D>();
         Rigidbody2D rb2 = obj2.GetComponent<Rigidbody2D>();
         if (rb1) rb1.linearVelocity = new Vector2(-1f, -3f);
         if (rb2) rb2.linearVelocity = new Vector2(1f, -3f);
     }
+
 
 }

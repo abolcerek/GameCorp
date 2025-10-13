@@ -228,6 +228,8 @@ MonoBehaviour:
   fallSpeed: 4
   destroyY: -6
   health: 2
+  mediumAsteroidPrefab: {fileID: 2833135045240006432}
+  smallAsteroidPrefab: {fileID: 2833135045240006432, guid: c49ecbf4c286d4f54933b6954e242968, type: 3}
 --- !u!1 &6858925335585071635
 GameObject:
   m_ObjectHideFlags: 0
