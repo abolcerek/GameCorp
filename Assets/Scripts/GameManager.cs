@@ -69,4 +69,15 @@ public class GameManager : MonoBehaviour
         isGameOver = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public void GameOverByTimer()
+    {
+        if (isGameOver) return;
+        isGameOver = true;
+
+        Debug.Log("Time's up!");
+        Player_Movement.Instance.enableInput(false);
+        if (gameOverText != null) gameOverText.SetActive(true);
+        if (restartButton != null) restartButton.SetActive(true);
+    }
 }
