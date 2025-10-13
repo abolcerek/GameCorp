@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0fc0275b1cf8e491383ef16fbbd1671c
+guid: eadb541ec22cb430da1bbd7112af8879
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9172341709173245782
-    second: space-temp-background_0
+      213: -359119153593706479
+    second: temporarybackground_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: space-temp-background_0
+      name: temporarybackground_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 65745c5ff24ba4f70800000000000000
-      internalID: 9172341709173245782
+      spriteID: 11812025807240bf0800000000000000
+      internalID: -359119153593706479
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      space-temp-background_0: 9172341709173245782
+      temporarybackground_0: -359119153593706479
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

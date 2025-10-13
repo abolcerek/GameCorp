@@ -12,7 +12,11 @@ public class Player_Movement : MonoBehaviour
 
     public float moveSpeed = 7f;
 
-    Rigidbody2D rb;
+    // ✅ Add these two variables so dx and dy exist everywhere
+    private float dx;
+    private float dy;
+
+    private Rigidbody2D rb;
 
     void Awake()
     {
@@ -24,33 +28,35 @@ public class Player_Movement : MonoBehaviour
 
     void Update()
     {
-        if (!canMove) {
-            return;
-        }
+        if (!canMove) return;
 
-        float dx = 0f;
-        float dy = 0f;
+        dx = 0f;
+        dy = 0f;
 
-        if (Input.GetKey(rightKey)) {
-            dx += 1f;
-        }
-        if (Input.GetKey(leftKey))  {dx -= 1f;
-        }
-        if (Input.GetKey(upKey))    {dy += 1f;
-        }
-        if (Input.GetKey(downKey))  {dy -= 1f;
-        }
-
-        Vector2 dir = new Vector2(dx, dy);
-        // if (dir.sqrMagnitude > 1f) dir.Normalize();
-
-        rb.linearVelocity = dir * moveSpeed;
+        if (Input.GetKey(rightKey)) dx += 1f;
+        if (Input.GetKey(leftKey))  dx -= 1f;
+        if (Input.GetKey(upKey))    dy += 1f;
+        if (Input.GetKey(downKey))  dy -= 1f;
     }
 
+    void FixedUpdate()
+    {
+        if (!canMove) return;
+
+        Vector2 dir = new Vector2(dx, dy);
+        rb.linearVelocity = dir * moveSpeed;
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, -2.5f, 2.5f);
+        pos.y = Mathf.Clamp(pos.y, -4.5f, 4.5f);
+        transform.position = pos;
+    }
+
+    // ✅ Re-add the enableInput method so GameManager can disable movement
     public void enableInput(bool flag)
     {
         canMove = flag;
-        if (!flag && rb != null) {
+        if (!flag && rb != null)
+        {
             rb.linearVelocity = Vector2.zero;
         }
     }
