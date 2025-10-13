@@ -1,16 +1,17 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public int startingLives = 3;
-    public TextMeshProUGUI livesText;
     public GameObject gameOverText;
     public GameObject restartButton;
     private int lives;
     public bool isGameOver = false;
     public static GameManager Instance;
+    public Image[] lifeIcons; 
 
     void Awake()
     {
@@ -42,10 +43,13 @@ public class GameManager : MonoBehaviour
 
     private void UpdateUI()
     {
-        if (livesText != null)  {
-            livesText.text = $"Lives: {lives}";
+        for (int i = 0; i < lifeIcons.Length; i++)
+        {
+            if (lifeIcons[i] != null)
+                lifeIcons[i].enabled = (i < lives);
         }
     }
+
 
     private void GameOver()
     {

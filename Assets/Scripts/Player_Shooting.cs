@@ -18,8 +18,8 @@ public class Player_Shooting : MonoBehaviour
 
     void Fire()
     {
-        GameObject b = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-
+        Vector3 spawnPos = transform.position + new Vector3(0f, 0.8f, 0f); // adjust Y as needed
+        GameObject b = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
         var rb = b.GetComponent<Rigidbody2D>();
         rb.linearVelocity = Vector2.up * bulletSpeed;
         rb.gravityScale = 0f;
