@@ -230,6 +230,10 @@ MonoBehaviour:
   health: 2
   mediumAsteroidPrefab: {fileID: 2833135045240006432}
   smallAsteroidPrefab: {fileID: 2833135045240006432, guid: c49ecbf4c286d4f54933b6954e242968, type: 3}
+  explosionPrefab: {fileID: 8747241944602480874, guid: 081b0ca8d50204231a86447f4c52eb0d, type: 3}
+  smallExplosionSound: {fileID: 8300000, guid: a330e9eb6330444709291fd0bb6cd490, type: 3}
+  mediumExplosionSound: {fileID: 8300000, guid: 32e32e862c62f44d4bb3f754bac83471, type: 3}
+  largeExplosionSound: {fileID: 8300000, guid: dfe4bad99389147b5be145ea16ec593e, type: 3}
 --- !u!1 &6858925335585071635
 GameObject:
   m_ObjectHideFlags: 0

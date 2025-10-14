@@ -13,9 +13,14 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public Image[] lifeIcons; 
 
+    [Header("Sounds")]
+    public AudioClip lifeLostSound;
+    private AudioSource audioSource;
+
     void Awake()
     {
     Instance = this;
+    audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     void Start()
@@ -32,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     public void LoseLife(int amount = 1)
     {
+        if (lifeLostSound) audioSource.PlayOneShot(lifeLostSound);
         SetLives(lives - amount);
         if (lives <= 0)
         {

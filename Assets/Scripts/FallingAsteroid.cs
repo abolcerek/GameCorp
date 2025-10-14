@@ -13,11 +13,22 @@ public class FallingAsteroid : MonoBehaviour
     public GameObject mediumAsteroidPrefab; // used by large asteroids
     public GameObject smallAsteroidPrefab;  // used by medium asteroids
 
+    [Header("Explosion FX")]
+    public GameObject explosionPrefab;  // assign glowing explosion prefab
+    public AudioClip smallExplosionSound;
+    public AudioClip mediumExplosionSound;
+    public AudioClip largeExplosionSound;
+
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        audioSource = gameObject.AddComponent<AudioSource>();
+    }
 
     void Update()
     {
-        // Defensive check — prevents null reference
-        if (GameManager.Instance == null || GameManager.Instance.isGameOver) 
+        if (GameManager.Instance == null || GameManager.Instance.isGameOver)
             return;
 
         transform.Translate(Vector2.down * fallSpeed * Time.deltaTime);
@@ -28,7 +39,7 @@ public class FallingAsteroid : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (GameManager.Instance != null && GameManager.Instance.isGameOver) 
+        if (GameManager.Instance != null && GameManager.Instance.isGameOver)
             return;
 
         if (other.CompareTag("Bullet"))
@@ -42,10 +53,10 @@ public class FallingAsteroid : MonoBehaviour
             if (player != null)
                 player.TakeDamage(1);
 
+            Explode();
             Destroy(gameObject);
         }
     }
-
 
     void TakeDamage(int dmg)
     {
@@ -53,17 +64,13 @@ public class FallingAsteroid : MonoBehaviour
 
         if (health <= 0)
         {
-            // ✅ Large asteroid breaks into 2 mediums
+            // Spawn smaller asteroids if applicable
             if (mediumAsteroidPrefab != null && gameObject.name.Contains("Large"))
-            {
                 SpawnChildAsteroids(mediumAsteroidPrefab);
-            }
-            // ✅ Medium asteroid breaks into 2 smalls
             else if (smallAsteroidPrefab != null && gameObject.name.Contains("Medium"))
-            {
                 SpawnChildAsteroids(smallAsteroidPrefab);
-            }
 
+            Explode();
             Destroy(gameObject);
         }
     }
@@ -82,6 +89,33 @@ public class FallingAsteroid : MonoBehaviour
         Rigidbody2D rb2 = obj2.GetComponent<Rigidbody2D>();
         if (rb1) rb1.linearVelocity = new Vector2(-1f, -3f);
         if (rb2) rb2.linearVelocity = new Vector2(1f, -3f);
+    }
+
+    void Explode()
+    {
+        // Instantiate explosion prefab
+        if (explosionPrefab != null)
+        {
+            GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+
+            // Optionally choose which sound the prefab plays
+            AudioSource explosionAudio = explosion.GetComponent<AudioSource>();
+            if (explosionAudio != null)
+            {
+                if (gameObject.name.Contains("Large") && largeExplosionSound)
+                    explosionAudio.PlayOneShot(largeExplosionSound);
+                else if (gameObject.name.Contains("Medium") && mediumExplosionSound)
+                    explosionAudio.PlayOneShot(mediumExplosionSound);
+                else if (gameObject.name.Contains("Small") && smallExplosionSound)
+                    explosionAudio.PlayOneShot(smallExplosionSound);
+            }
+        }
+
+        // ✅ Camera shake only for large asteroids
+        if (CameraShake.Instance != null && gameObject.name.Contains("Large"))
+        {
+            CameraShake.Instance.Shake(0.35f, 0.5f);
+        }
     }
 
 
