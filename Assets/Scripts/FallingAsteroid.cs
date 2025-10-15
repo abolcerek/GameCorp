@@ -96,7 +96,9 @@ public class FallingAsteroid : MonoBehaviour
         // Instantiate explosion prefab
         if (explosionPrefab != null)
         {
-            GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            GameObject explosion = Instantiate(explosionPrefab, transform.position + new Vector3(0, 0, -1), Quaternion.identity);
+            Debug.Log("Explosion triggered on " + gameObject.name);
+
 
             // Optionally choose which sound the prefab plays
             AudioSource explosionAudio = explosion.GetComponent<AudioSource>();

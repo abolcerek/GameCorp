@@ -21,6 +21,7 @@ public class Player_Shooting : MonoBehaviour
     void Fire()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.volume = 0.7f;
         if (shootSound) audioSource.PlayOneShot(shootSound);
         Vector3 spawnPos = transform.position + new Vector3(0f, 0.8f, 0f); // adjust Y as needed
         GameObject b = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);

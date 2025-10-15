@@ -230,7 +230,7 @@ MonoBehaviour:
   health: 1
   mediumAsteroidPrefab: {fileID: 0}
   smallAsteroidPrefab: {fileID: 0}
-  explosionPrefab: {fileID: 6346904522651906113, guid: 0411617bb0a3d46a0afe7cbc74036be0, type: 3}
+  explosionPrefab: {fileID: 653968807126491248, guid: 9f410ee996a1341f596cf3da85c1a852, type: 3}
   smallExplosionSound: {fileID: 8300000, guid: a330e9eb6330444709291fd0bb6cd490, type: 3}
   mediumExplosionSound: {fileID: 8300000, guid: 32e32e862c62f44d4bb3f754bac83471, type: 3}
   largeExplosionSound: {fileID: 8300000, guid: dfe4bad99389147b5be145ea16ec593e, type: 3}

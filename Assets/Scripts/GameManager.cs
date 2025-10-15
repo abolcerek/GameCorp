@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public int startingLives = 3;
     public GameObject gameOverText;
     public GameObject restartButton;
+    public GameObject levelCompleteText;
     private int lives;
     public bool isGameOver = false;
     public static GameManager Instance;
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     {
     Instance = this;
     audioSource = gameObject.AddComponent<AudioSource>();
+    audioSource.volume = 0.5f;
     }
 
     void Start()
@@ -66,6 +68,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game Over!");
         Player_Movement.Instance.enableInput(false);
 
+        FreezeWorld();
+
         if (gameOverText != null) gameOverText.SetActive(true);
         if (restartButton != null) restartButton.SetActive(true);
     }
@@ -81,9 +85,32 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
-        Debug.Log("Time's up!");
+        Debug.Log("Time's up! Level Complete!");
         Player_Movement.Instance.enableInput(false);
-        if (gameOverText != null) gameOverText.SetActive(true);
+
+        FreezeWorld();
+
+        if (levelCompleteText != null) levelCompleteText.SetActive(true);  // ← Show new text
         if (restartButton != null) restartButton.SetActive(true);
     }
+
+    public void FreezeWorld()
+    {
+    ScrollingBackground[] backgrounds = FindObjectsOfType<ScrollingBackground>();
+    foreach (var bg in backgrounds)
+    {
+        bg.enabled = false;
+    }
+
+    FallingAsteroid[] asteroids = FindObjectsOfType<FallingAsteroid>();
+    foreach (var a in asteroids)
+    {
+        Destroy(a.gameObject);
+    }
+
+    AsteroidSpawner spawner = FindObjectOfType<AsteroidSpawner>();
+    if (spawner != null)
+        spawner.enabled = false;
+    }
+
 }

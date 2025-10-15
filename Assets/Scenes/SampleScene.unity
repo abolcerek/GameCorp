@@ -489,6 +489,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 202832431498035871, guid: cc66bdf2b022546bcbd1b20551a7e008, type: 3}
   bulletSpeed: 8
   fireCooldown: 0.3
+  shootSound: {fileID: 8300000, guid: 5562bc2b5c6d0406c97517044fb92ee3, type: 3}
 --- !u!114 &349032153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -666,6 +667,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -791,6 +793,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b4eae531464d48afae3831c5d464b2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &532179873
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,6 +1398,7 @@ MonoBehaviour:
   - {fileID: 1996059261}
   - {fileID: 616841649}
   - {fileID: 532179875}
+  lifeLostSound: {fileID: 8300000, guid: 75f92ac4a27d3476bb90f754e2e66a90, type: 3}
 --- !u!4 &1335903511
 Transform:
   m_ObjectHideFlags: 0
@@ -1672,11 +1687,11 @@ MonoBehaviour:
   smallAsteroid: {fileID: 2833135045240006432, guid: c49ecbf4c286d4f54933b6954e242968, type: 3}
   mediumAsteroid: {fileID: 2833135045240006432, guid: e7302c6e96a614b998d0cfe174bcec8f, type: 3}
   largeAsteroid: {fileID: 2833135045240006432, guid: 881ef28b2cad047e398754b71ab3a5af, type: 3}
-  spawnRate: 0.3
+  spawnRate: 0.5
   spawnHeightOffset: 1
   gameDuration: 180
-  mediumAsteroidTime: 60
-  largeAsteroidTime: 110
+  mediumAsteroidTime: 20
+  largeAsteroidTime: 40
 --- !u!4 &1726357320
 Transform:
   m_ObjectHideFlags: 0
