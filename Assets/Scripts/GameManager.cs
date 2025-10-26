@@ -96,21 +96,22 @@ public class GameManager : MonoBehaviour
 
     public void FreezeWorld()
     {
-    ScrollingBackground[] backgrounds = FindObjectsOfType<ScrollingBackground>();
+    ScrollingBackground[] backgrounds = FindObjectsByType<ScrollingBackground>(FindObjectsSortMode.None);
     foreach (var bg in backgrounds)
     {
         bg.enabled = false;
     }
 
-    FallingAsteroid[] asteroids = FindObjectsOfType<FallingAsteroid>();
+    FallingAsteroid[] asteroids = FindObjectsByType<FallingAsteroid>(FindObjectsSortMode.None);
     foreach (var a in asteroids)
     {
         Destroy(a.gameObject);
     }
 
-    AsteroidSpawner spawner = FindObjectOfType<AsteroidSpawner>();
+    AsteroidSpawner spawner = FindFirstObjectByType<AsteroidSpawner>();
     if (spawner != null)
         spawner.enabled = false;
     }
+
 
 }
