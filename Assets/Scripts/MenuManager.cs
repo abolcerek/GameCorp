@@ -31,10 +31,18 @@ public class MenuManager : MonoBehaviour
     {
         panelMain.SetActive(true);
         panelLevelSelect.SetActive(false);
-        if (panelControls) panelControls.SetActive(false);
+        panelControls.SetActive(false);
         if (panelShop) panelShop.SetActive(false);
         if (panelCustomize) panelCustomize.SetActive(false);
     }
+
+    public void ShowControls()
+    {
+        panelMain.SetActive(false);
+        panelControls.SetActive(true);
+    }
+
+
 
     // Play opens Level Select
     public void Play()
@@ -61,8 +69,6 @@ public class MenuManager : MonoBehaviour
         Debug.Log("Level 3 coming soon!");
     }
 
-    // === Optional other panels ===
-    public void ShowControls()  { ToggleOne(panelControls); }
     public void ShowShop()      { ToggleOne(panelShop); }
     public void ShowCustomize() { ToggleOne(panelCustomize); }
 
