@@ -118,16 +118,15 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
-        PersistShardsAndCheckUnlock();
-
         Debug.Log("Time's up! Level Complete!");
         Player_Movement.Instance.enableInput(false);
 
         FreezeWorld();
 
-        if (levelCompleteText != null) levelCompleteText.SetActive(true);  // ← Show new text
-        if (restartButton != null) restartButton.SetActive(true);
+        // ✅ Send player back to main menu after winning
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
+
 
     public void FreezeWorld()
     {

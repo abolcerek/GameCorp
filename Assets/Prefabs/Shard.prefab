@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 179.93846, y: 1405.4904, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4.5, y: 4.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -78,9 +78,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1723463721
+  m_SortingLayer: 3
+  m_SortingOrder: 20
   m_Sprite: {fileID: -4104623613003520396, guid: c7358711eaf684f0293750a6bf1346d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7998af69f7e344dbb8593e1aece5d205, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  fallSpeed: 1.5
-  burstVelocityRangeX: {x: -1.5, y: 1.5}
-  burstVelocityRangeY: {x: 1, y: 3}
+  fallSpeed: 3
+  burstVelocityRangeX: {x: -3, y: 3}
+  burstVelocityRangeY: {x: 1, y: 6}
   value: 1

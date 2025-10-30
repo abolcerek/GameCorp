@@ -1696,7 +1696,7 @@ MonoBehaviour:
   largeAsteroid: {fileID: 2833135045240006432, guid: 881ef28b2cad047e398754b71ab3a5af, type: 3}
   spawnRate: 0.5
   spawnHeightOffset: 1
-  gameDuration: 180
+  gameDuration: 90
   mediumAsteroidTime: 20
   largeAsteroidTime: 40
 --- !u!4 &1726357320

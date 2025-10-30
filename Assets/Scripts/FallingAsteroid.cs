@@ -13,17 +13,17 @@ public class FallingAsteroid : MonoBehaviour
     public GameObject mediumAsteroidPrefab; // used by large asteroids
     public GameObject smallAsteroidPrefab;  // used by medium asteroids
 
-    [Header("Rewards")]
-    public GameObject shardPrefab;
-    public int shardsMin = 3;
-    public int shardsMax = 6;
-
-
     [Header("Explosion FX")]
     public GameObject explosionPrefab;  // assign glowing explosion prefab
     public AudioClip smallExplosionSound;
     public AudioClip mediumExplosionSound;
     public AudioClip largeExplosionSound;
+
+    [Header("Rewards")]
+    public GameObject shardPrefab;
+    public int shardsMin = 3;
+    public int shardsMax = 6;
+    public bool dropsShards = false; // enable on Large Asteroids
 
     private AudioSource audioSource;
 
@@ -99,8 +99,9 @@ public class FallingAsteroid : MonoBehaviour
 
     void Explode()
     {
-        if (gameObject.name.Contains("Large"))
+        if (dropsShards)
         {
+            Debug.Log($"[Asteroid] {name} exploding @ {transform.position} → spawning shards");
             SpawnShards();
         }
 
@@ -108,8 +109,6 @@ public class FallingAsteroid : MonoBehaviour
         if (explosionPrefab != null)
         {
             GameObject explosion = Instantiate(explosionPrefab, transform.position + new Vector3(0, 0, -1), Quaternion.identity);
-            Debug.Log("Explosion triggered on " + gameObject.name);
-
 
             // Optionally choose which sound the prefab plays
             AudioSource explosionAudio = explosion.GetComponent<AudioSource>();
@@ -133,20 +132,69 @@ public class FallingAsteroid : MonoBehaviour
 
     void SpawnShards()
     {
-        if (shardPrefab == null) return;
-        int count = Random.Range(shardsMin, shardsMax + 1);
+        if (shardPrefab == null) { Debug.LogWarning("[Shards] shardPrefab is NULL"); return; }
+
+        int count  = Random.Range(shardsMin, shardsMax + 1);
+        float radius = 1.0f;                 // keep tight so they stay on-screen
+        Vector3 origin = transform.position;
+
+        Camera cam = Camera.main;
 
         for (int i = 0; i < count; i++)
         {
-            Vector3 offset = new Vector3(
-                Random.Range(-0.4f, 0.4f),
-                Random.Range(-0.1f, 0.3f),
-                0f
-            );
-            Instantiate(shardPrefab, transform.position + offset, Quaternion.identity);
+            // radial scatter, slightly biased downward so they don't pop above camera
+            float angle    = Random.Range(0f, Mathf.PI * 2f);
+            float distance = Random.Range(radius * 0.4f, radius);
+            Vector3 offset = new Vector3(Mathf.Cos(angle) * distance,
+                                        Mathf.Sin(angle) * distance - 0.25f,
+                                        0f);
+
+            Vector3 spawnPos = origin + offset;
+
+            // clamp into the camera’s visible horizontal range (safety)
+            if (cam != null)
+            {
+                Vector3 vp = cam.WorldToViewportPoint(spawnPos);
+                // if somehow outside, nudge inward a bit
+                if (vp.x < 0.05f) spawnPos.x = cam.ViewportToWorldPoint(new Vector3(0.05f, vp.y, vp.z)).x;
+                if (vp.x > 0.95f) spawnPos.x = cam.ViewportToWorldPoint(new Vector3(0.95f, vp.y, vp.z)).x;
+                if (vp.y < 0.05f) spawnPos.y = cam.ViewportToWorldPoint(new Vector3(vp.x, 0.05f, vp.z)).y;
+                if (vp.y > 0.95f) spawnPos.y = cam.ViewportToWorldPoint(new Vector3(vp.x, 0.95f, vp.z)).y;
+            }
+
+            // ensure it renders in front
+            spawnPos.z = -1f;
+
+            GameObject shard = Instantiate(shardPrefab, spawnPos, Quaternion.identity);
+
+            // force renderer to a visible layer/order (even if prefab was mis-set)
+            var sr = shard.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                // Use a sorting layer that is above your background; if you don't have one,
+                // leave this line or set sr.sortingLayerName = "Default";
+                sr.sortingLayerName = "Foreground";   // create this sorting layer once in Project Settings
+                sr.sortingOrder = 20;                 // bigger than background order
+                // do NOT change color alpha here; keep prefab’s look
+            }
+
+            // keep prefab’s scale (commented out any random scale that might shrink it)
+            // float randomScale = Random.Range(0.8f, 1.2f);
+            // shard.transform.localScale = Vector3.one * randomScale;
+
+            // small outward drift so they separate
+            var rb = shard.GetComponent<Rigidbody2D>();
+            if (rb)
+            {
+                Vector2 burst = offset.normalized * Random.Range(1.3f, 2.3f);
+                rb.gravityScale = 0f;
+                rb.linearVelocity = burst;
+            }
+
+            // one-line proof per shard with key render info
+            Debug.Log($"[Shards] #{i+1}/{count} at {spawnPos}  layer={sr?.sortingLayerName}/{sr?.sortingOrder}  scale={shard.transform.localScale}");
         }
+
+        Debug.Log($"[Shards] DONE: spawned {count} at origin {origin}");
     }
-
-
-
 }
