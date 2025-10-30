@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8792874121604630389}
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 3157805469926345765, guid: 72497de4b04cb4436986fc1eeb7d7053, type: 3}
+  m_Sprite: {fileID: 8613188847900333589, guid: 4f819af08d6c64f7c9e278e4b84e95d6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -157,7 +157,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.8
 --- !u!60 &2796002392826534921
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -196,7 +196,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.16, y: 0.13}
+    oldSize: {x: 1.42, y: 1.18}
     newSize: {x: 0.16, y: 0.13}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -234,6 +234,10 @@ MonoBehaviour:
   smallExplosionSound: {fileID: 8300000, guid: a330e9eb6330444709291fd0bb6cd490, type: 3}
   mediumExplosionSound: {fileID: 8300000, guid: 32e32e862c62f44d4bb3f754bac83471, type: 3}
   largeExplosionSound: {fileID: 8300000, guid: dfe4bad99389147b5be145ea16ec593e, type: 3}
+  shardPrefab: {fileID: 0}
+  shardsMin: 3
+  shardsMax: 6
+  dropsShards: 0
 --- !u!1 &6858925335585071635
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,7 +322,7 @@ TrailRenderer:
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 1.4
     widthCurve:
       serializedVersion: 2
       m_Curve:

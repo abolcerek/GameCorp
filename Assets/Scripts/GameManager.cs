@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
 
         PlayerPrefs.Save();
     }
+    
 
 
 

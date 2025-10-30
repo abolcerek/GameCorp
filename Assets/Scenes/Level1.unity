@@ -568,7 +568,7 @@ MonoBehaviour:
   fireCooldown: 0.125
   missilePrefab: {fileID: 8162719011593114154, guid: fa9ad9d81af1c4414b8d3e74ff6a326f, type: 3}
   missileSpeed: 8
-  missileCooldown: 0.7
+  missileCooldown: 1
   laserShootSound: {fileID: 8300000, guid: 5562bc2b5c6d0406c97517044fb92ee3, type: 3}
   missileShootSound: {fileID: 8300000, guid: aa9b6b9f9976f4b6d870994e7c5f0621, type: 3}
   overheatSound: {fileID: 8300000, guid: 77776aaf3c96944db969f82becb8d4f3, type: 3}
@@ -1758,7 +1758,7 @@ MonoBehaviour:
   lifeLostSound: {fileID: 8300000, guid: 75f92ac4a27d3476bb90f754e2e66a90, type: 3}
   sessionShards: 0
   shardsHudText: {fileID: 0}
-  missileUnlockThreshold: 25
+  missileUnlockThreshold: 5
 --- !u!4 &1335903511
 Transform:
   m_ObjectHideFlags: 0

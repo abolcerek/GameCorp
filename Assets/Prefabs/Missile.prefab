@@ -164,7 +164,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.25, y: 0.5}
+  m_Size: {x: 0.4, y: 0.8}
   m_EdgeRadius: 0
 --- !u!114 &-8643648880565401860
 MonoBehaviour:
@@ -180,5 +180,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Missile
   speed: 8
   lifetime: 4
-  damage: 999
+  damage: 3
   hitExplosionPrefab: {fileID: 653968807126491248, guid: 4ffa6044bc9be4781b4da65df345c013, type: 3}
