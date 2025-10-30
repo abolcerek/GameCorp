@@ -10,6 +10,8 @@ public class AsteroidSpawner : MonoBehaviour
     [Header("Spawn Settings")]
     public float spawnRate = 1.5f;
     public float spawnHeightOffset = 1f;
+    [Tooltip("Padding from the true screen edges to avoid spawning partially off-screen.")]
+    public float edgePadding = 0.1f;
 
     [Header("Timing")]
     public float gameDuration = 60f;
@@ -43,47 +45,94 @@ public class AsteroidSpawner : MonoBehaviour
 
     void SpawnAsteroid()
     {
-        // ✅ Define relative spawn weights
-        float smallWeight = 0.7f;  // 70% chance
-        float mediumWeight = 0.25f; // 25% chance
-        float largeWeight = 0.05f;  // 5% chance
+        // --- pick prefab by weights (same logic as before) ---
+        float smallWeight = 0.7f;
+        float mediumWeight = 0.25f;
+        float largeWeight = 0.05f;
 
-        // Adjust weights dynamically as game progresses
         if (elapsed < mediumAsteroidTime)
         {
-            mediumWeight = 0f;
-            largeWeight = 0f;
+            mediumWeight = 0f; largeWeight = 0f;
         }
         else if (elapsed < largeAsteroidTime)
         {
             largeWeight = 0f;
         }
 
-        // Total weight of all available asteroid types
         float totalWeight = smallWeight + mediumWeight + largeWeight;
         float roll = Random.value * totalWeight;
 
         GameObject prefabToSpawn = smallAsteroid;
+        if (roll < smallWeight) prefabToSpawn = smallAsteroid;
+        else if (roll < smallWeight + mediumWeight) prefabToSpawn = mediumAsteroid;
+        else prefabToSpawn = largeAsteroid;
 
-        if (roll < smallWeight)
-            prefabToSpawn = smallAsteroid;
-        else if (roll < smallWeight + mediumWeight)
-            prefabToSpawn = mediumAsteroid;
-        else
-            prefabToSpawn = largeAsteroid;
+        if (!prefabToSpawn) return;
 
-        // Safety check
-        if (prefabToSpawn == null) return;
+        // --- camera-based horizontal bounds ---
+        Camera cam = Camera.main;
+        if (!cam || !cam.orthographic)
+        {
+            Debug.LogWarning("AsteroidSpawner: Main Camera missing or not orthographic.");
+            return;
+        }
 
-        // Random horizontal spawn
-        float minX = -3.3f + prefabToSpawn.transform.localScale.x / 2f;
-        float maxX = 3.3f - prefabToSpawn.transform.localScale.x / 2f;
+        // World-space half width of camera view
+        float halfHeight = cam.orthographicSize;
+        float halfWidth = halfHeight * cam.aspect;
+
+        // Horizontal world edges at camera center
+        float camX = cam.transform.position.x;
+        float leftEdge = camX - halfWidth;
+        float rightEdge = camX + halfWidth;
+
+        // Prefab half-width in world units (use renderer/collider bounds if available)
+        float prefabHalfW = GetPrefabHalfWidth(prefabToSpawn);
+
+        // Final safe range
+        float minX = leftEdge + edgePadding + prefabHalfW;
+        float maxX = rightEdge - edgePadding - prefabHalfW;
+
+        // Safety: if minX > maxX (giant prefab / tiny screen), collapse to center
+        if (minX > maxX) { float mid = (minX + maxX) * 0.5f; minX = maxX = mid; }
+
         float randomX = Random.Range(minX, maxX);
 
-        float spawnY = 5.2f + spawnHeightOffset;
-        Vector2 spawnPos = new Vector2(randomX, spawnY);
+        // Spawn just above the top of the camera view
+        float spawnY = cam.transform.position.y + halfHeight + spawnHeightOffset;
 
-        Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+        Instantiate(prefabToSpawn, new Vector2(randomX, spawnY), Quaternion.identity);
     }
 
+    float GetPrefabHalfWidth(GameObject prefab)
+    {
+        // Try SpriteRenderer from the prefab
+        var sr = prefab.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) return sr.bounds.extents.x;
+
+        // Try Collider2D
+        var col = prefab.GetComponentInChildren<Collider2D>();
+        if (col != null) return col.bounds.extents.x;
+
+        // Fallback: assume ~0.5 world units if no size info
+        return 0.5f;
+    }
+
+    // Visualize spawn band in Scene view
+    void OnDrawGizmosSelected()
+    {
+        Camera cam = Camera.main;
+        if (!cam || !cam.orthographic) return;
+
+        float halfH = cam.orthographicSize;
+        float halfW = halfH * cam.aspect;
+        float yTop = cam.transform.position.y + halfH + spawnHeightOffset;
+        float xL = cam.transform.position.x - halfW + edgePadding;
+        float xR = cam.transform.position.x + halfW - edgePadding;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(new Vector3(xL, yTop, 0f), new Vector3(xR, yTop, 0f));
+        Gizmos.DrawSphere(new Vector3(xL, yTop, 0f), 0.05f);
+        Gizmos.DrawSphere(new Vector3(xR, yTop, 0f), 0.05f);
+    }
 }
