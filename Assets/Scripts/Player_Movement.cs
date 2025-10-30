@@ -8,10 +8,10 @@ public class Player_Movement : MonoBehaviour
     public Sprite defaultShipSprite;
     public Sprite missileShipSprite;
 
-    public string leftKey = "left";
-    public string rightKey = "right";
-    public string upKey = "up";
-    public string downKey = "down";
+    public KeyCode leftKey  = KeyCode.LeftArrow;
+    public KeyCode rightKey = KeyCode.RightArrow;
+    public KeyCode upKey    = KeyCode.UpArrow;
+    public KeyCode downKey  = KeyCode.DownArrow;
     public bool canMove = true;
     public static Player_Movement Instance;
 
