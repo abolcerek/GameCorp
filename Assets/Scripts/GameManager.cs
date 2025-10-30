@@ -18,6 +18,15 @@ public class GameManager : MonoBehaviour
     public AudioClip lifeLostSound;
     private AudioSource audioSource;
 
+    [Header("Rewards")]
+    public int sessionShards = 0;
+    public TMPro.TextMeshProUGUI shardsHudText; // optional in-game HUD
+    public int missileUnlockThreshold = 25;
+
+    const string TotalShardsKey = "TotalShards";
+    const string MissilesUnlockedKey = "MissilesUnlocked";
+
+
     void Awake()
     {
     Instance = this;
@@ -58,10 +67,32 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void AddShard(int amount)
+    {
+        sessionShards += amount;
+        UpdateShardsHUD();
+    }
+
+    void UpdateShardsHUD()
+    {
+        if (shardsHudText) shardsHudText.text = $"Shards: {sessionShards}";
+    }
+
+    void PersistShardsAndCheckUnlock()
+    {
+        int total = PlayerPrefs.GetInt(TotalShardsKey, 0) + sessionShards;
+        PlayerPrefs.SetInt(TotalShardsKey, total);
+
+        if (total >= missileUnlockThreshold)
+            PlayerPrefs.SetInt(MissilesUnlockedKey, 1);
+
+        PlayerPrefs.Save();
+    }
+
+
 
     private void GameOver()
     {
-        // Implement game over logic here (e.g., show game over screen, restart level)
         if (isGameOver) return;
         isGameOver = true;
 
@@ -70,9 +101,11 @@ public class GameManager : MonoBehaviour
 
         FreezeWorld();
 
-        if (gameOverText != null) gameOverText.SetActive(true);
-        if (restartButton != null) restartButton.SetActive(true);
+        // 🔁 Replace restart UI with scene transition
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
+
+
 
     public void RestartGame()
     {
@@ -84,6 +117,8 @@ public class GameManager : MonoBehaviour
     {
         if (isGameOver) return;
         isGameOver = true;
+
+        PersistShardsAndCheckUnlock();
 
         Debug.Log("Time's up! Level Complete!");
         Player_Movement.Instance.enableInput(false);
@@ -112,6 +147,8 @@ public class GameManager : MonoBehaviour
     if (spawner != null)
         spawner.enabled = false;
     }
+
+
 
 
 }

@@ -13,6 +13,12 @@ public class FallingAsteroid : MonoBehaviour
     public GameObject mediumAsteroidPrefab; // used by large asteroids
     public GameObject smallAsteroidPrefab;  // used by medium asteroids
 
+    [Header("Rewards")]
+    public GameObject shardPrefab;
+    public int shardsMin = 3;
+    public int shardsMax = 6;
+
+
     [Header("Explosion FX")]
     public GameObject explosionPrefab;  // assign glowing explosion prefab
     public AudioClip smallExplosionSound;
@@ -93,6 +99,11 @@ public class FallingAsteroid : MonoBehaviour
 
     void Explode()
     {
+        if (gameObject.name.Contains("Large"))
+        {
+            SpawnShards();
+        }
+
         // Instantiate explosion prefab
         if (explosionPrefab != null)
         {
@@ -119,6 +130,23 @@ public class FallingAsteroid : MonoBehaviour
             CameraShake.Instance.Shake(0.35f, 0.5f);
         }
     }
+
+    void SpawnShards()
+    {
+        if (shardPrefab == null) return;
+        int count = Random.Range(shardsMin, shardsMax + 1);
+
+        for (int i = 0; i < count; i++)
+        {
+            Vector3 offset = new Vector3(
+                Random.Range(-0.4f, 0.4f),
+                Random.Range(-0.1f, 0.3f),
+                0f
+            );
+            Instantiate(shardPrefab, transform.position + offset, Quaternion.identity);
+        }
+    }
+
 
 
 }

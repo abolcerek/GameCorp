@@ -21,11 +21,16 @@ public class Player_Shooting : MonoBehaviour
     private enum AmmoType { Laser, Missile }
     private AmmoType currentAmmo = AmmoType.Laser;
 
+    bool missilesUnlocked;
+    const string MissilesUnlockedKey = "MissilesUnlocked";
+
+
     void Start()
     {
         // Create one reusable AudioSource instead of adding one per shot
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.volume = 0.7f;
+        missilesUnlocked = PlayerPrefs.GetInt(MissilesUnlockedKey, 0) == 1;
     }
 
     void Update()
@@ -43,9 +48,18 @@ public class Player_Shooting : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            currentAmmo = AmmoType.Missile;
-            Debug.Log("Switched to Missile");
+            if (missilesUnlocked)
+            {
+                currentAmmo = AmmoType.Missile;
+                Debug.Log("Switched to Missile");
+            }
+            else
+            {
+                Debug.Log("Missiles locked: collect more shards!");
+                // optional: play a "locked" SFX/UI flash
+            }
         }
+
     }
 
     void HandleShooting()

@@ -19,12 +19,36 @@ public class MenuManager : MonoBehaviour
     // Set to your gameplay scene name
     public string gameplaySceneName = "Game";
 
+    [Header("Rewards UI (Menu)")]
+    public TMPro.TextMeshProUGUI totalShardsText;
+    public GameObject missilesUnlockedBadge;
+    public GameObject missilesLockedBadge;
+
+    [Header("Rewards Rules")]
+    public int missileUnlockThreshold = 25;
+
+    const string TotalShardsKey = "TotalShards";
+    const string MissilesUnlockedKey = "MissilesUnlocked";
+
+
     void Start()
     {
         ShowMain();
         if (level2Button) level2Button.interactable = false;
         if (level3Button) level3Button.interactable = false;
+        RefreshRewardsUI();
     }
+
+    void RefreshRewardsUI()
+    {
+        int total = PlayerPrefs.GetInt(TotalShardsKey, 0);
+        bool unlocked = PlayerPrefs.GetInt(MissilesUnlockedKey, 0) == 1;
+
+        if (totalShardsText) totalShardsText.text = $"Total Shards: {total}";
+        if (missilesUnlockedBadge) missilesUnlockedBadge.SetActive(unlocked);
+        if (missilesLockedBadge)   missilesLockedBadge.SetActive(!unlocked);
+    }
+
 
     // === Main navigation ===
     public void ShowMain()
