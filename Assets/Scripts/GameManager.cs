@@ -101,9 +101,12 @@ public class GameManager : MonoBehaviour
 
         FreezeWorld();
 
-        // 🔁 Replace restart UI with scene transition
+        // Save session shards + unlocks before leaving the scene
+        PersistShardsAndCheckUnlock();
+
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
+
 
 
 
@@ -122,6 +125,8 @@ public class GameManager : MonoBehaviour
         Player_Movement.Instance.enableInput(false);
 
         FreezeWorld();
+
+        PersistShardsAndCheckUnlock();
 
         // ✅ Send player back to main menu after winning
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");

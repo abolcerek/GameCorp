@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
@@ -16,100 +17,129 @@ public class MenuManager : MonoBehaviour
     public Button level3Button;
 
     [Header("Gameplay")]
-    // Set to your gameplay scene name
     public string gameplaySceneName = "Game";
 
-    [Header("Rewards UI (Menu)")]
-    public TMPro.TextMeshProUGUI totalShardsText;
-    public GameObject missilesUnlockedBadge;
-    public GameObject missilesLockedBadge;
+    // ===== SHOP UI =====
+    [Header("Shop UI")]
+    public Image shopMissileIcon;            // Unlocked missile image (shown when unlocked)
+    public Image shopMissileLockedIcon;      // Locked/with-slash image (shown when locked)
+    public Image shopShardIcon;              // Small shard sprite shown next to progress
+    public TextMeshProUGUI shopShardProgressText; // e.g., "14/25"
+    public Button shopEquipMissileButton;    // optional: enable only when unlocked
 
     [Header("Rewards Rules")]
     public int missileUnlockThreshold = 25;
 
+    // PlayerPrefs keys (must match GameManager)
     const string TotalShardsKey = "TotalShards";
     const string MissilesUnlockedKey = "MissilesUnlocked";
 
+    void OnEnable()
+    {
+        RefreshShopUI();
+    }
 
     void Start()
     {
         ShowMain();
         if (level2Button) level2Button.interactable = false;
         if (level3Button) level3Button.interactable = false;
-        RefreshRewardsUI();
+        RefreshShopUI();
     }
 
-    void RefreshRewardsUI()
+    void RefreshShopUI()
     {
         int total = PlayerPrefs.GetInt(TotalShardsKey, 0);
-        bool unlocked = PlayerPrefs.GetInt(MissilesUnlockedKey, 0) == 1;
+        bool unlocked = PlayerPrefs.GetInt(MissilesUnlockedKey, 0) == 1 || total >= missileUnlockThreshold;
 
-        if (totalShardsText) totalShardsText.text = $"Total Shards: {total}";
-        if (missilesUnlockedBadge) missilesUnlockedBadge.SetActive(unlocked);
-        if (missilesLockedBadge)   missilesLockedBadge.SetActive(!unlocked);
+        // Cap the progress display at the requirement (e.g., 25/25)
+        int shown = Mathf.Min(total, missileUnlockThreshold);
+
+        // Toggle which missile image is visible
+        if (shopMissileIcon)       shopMissileIcon.gameObject.SetActive(unlocked);
+        if (shopMissileLockedIcon) shopMissileLockedIcon.gameObject.SetActive(!unlocked);
+
+        // Progress "current/required" next to a shard icon
+        if (shopShardIcon) shopShardIcon.gameObject.SetActive(true); // always show icon in this row
+
+        if (shopShardProgressText)
+        {
+            shopShardProgressText.text = $"{shown}/{missileUnlockThreshold}";
+        }
+
+        // Optional: Equip button only when unlocked
+        if (shopEquipMissileButton)
+            shopEquipMissileButton.interactable = unlocked;
     }
 
 
-    // === Main navigation ===
+    // ---------- Navigation ----------
     public void ShowMain()
     {
-        panelMain.SetActive(true);
-        panelLevelSelect.SetActive(false);
-        panelControls.SetActive(false);
-        if (panelShop) panelShop.SetActive(false);
-        if (panelCustomize) panelCustomize.SetActive(false);
+        SetActiveSafe(panelMain, true);
+        SetActiveSafe(panelLevelSelect, false);
+        SetActiveSafe(panelControls, false);
+        SetActiveSafe(panelShop, false);
+        SetActiveSafe(panelCustomize, false);
+    }
+
+    public void ShowShop()
+    {
+        SetActiveSafe(panelMain, false);
+        SetActiveSafe(panelLevelSelect, false);
+        SetActiveSafe(panelControls, false);
+        SetActiveSafe(panelShop, true);
+        SetActiveSafe(panelCustomize, false);
+
+        RefreshShopUI();
+    }
+
+    public void Play()
+    {
+        SetActiveSafe(panelMain, false);
+        SetActiveSafe(panelLevelSelect, true);
+        SetActiveSafe(panelControls, false);
+        SetActiveSafe(panelShop, false);
+        SetActiveSafe(panelCustomize, false);
     }
 
     public void ShowControls()
     {
-        panelMain.SetActive(false);
-        panelControls.SetActive(true);
-    }
-
-
-
-    // Play opens Level Select
-    public void Play()
-    {
-        panelMain.SetActive(false);
-        panelLevelSelect.SetActive(true);
+        SetActiveSafe(panelMain, false);
+        SetActiveSafe(panelLevelSelect, false);
+        SetActiveSafe(panelControls, true);
+        SetActiveSafe(panelShop, false);
+        SetActiveSafe(panelCustomize, false);
     }
 
     public void BackToMain() => ShowMain();
 
-    // === Level selection ===
-    public void SelectLevel1()
-    {
-        SceneManager.LoadScene(gameplaySceneName);
-    }
-
-    public void SelectLevel2_Placeholder()
-    {
-        Debug.Log("Level 2 coming soon!");
-    }
-
-    public void SelectLevel3_Placeholder()
-    {
-        Debug.Log("Level 3 coming soon!");
-    }
-
-    public void ShowShop()      { ToggleOne(panelShop); }
-    public void ShowCustomize() { ToggleOne(panelCustomize); }
-
-    void ToggleOne(GameObject target)
-    {
-        panelMain.SetActive(false);
-        panelLevelSelect.SetActive(false);
-        if (panelControls) panelControls.SetActive(target == panelControls);
-        if (panelShop) panelShop.SetActive(target == panelShop);
-        if (panelCustomize) panelCustomize.SetActive(target == panelCustomize);
-    }
+    public void SelectLevel1() { SceneManager.LoadScene(gameplaySceneName); }
+    public void SelectLevel2_Placeholder() { Debug.Log("Level 2 coming soon!"); }
+    public void SelectLevel3_Placeholder() { Debug.Log("Level 3 coming soon!"); }
 
     public void QuitGame()
     {
         Application.Quit();
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+#endif
+    }
+
+    void SetActiveSafe(GameObject go, bool state)
+    {
+        if (!go) return;
+        if (go.activeSelf != state) go.SetActive(state);
+    }
+
+        public void ResetProgress()
+    {
+        PlayerPrefs.DeleteKey("TotalShards");
+        PlayerPrefs.DeleteKey("MissilesUnlocked");
+        PlayerPrefs.Save();
+
+        RefreshShopUI();
+
+        Debug.Log("Progress reset!");
     }
 }
