@@ -16,8 +16,9 @@ public class Player_Shooting : MonoBehaviour
     public float missileCooldown = 0.7f;
 
     [Header("Audio")]
-    public AudioClip shootSound;
-    public AudioClip overheatSound; // optional
+    public AudioClip laserShootSound;   // laser SFX
+    public AudioClip missileShootSound; // missile SFX
+    public AudioClip overheatSound;     // overheat SFX
     private AudioSource audioSource;
 
     // ===== Classic Cooldown (Laser) =====
@@ -158,7 +159,7 @@ public class Player_Shooting : MonoBehaviour
         {
             case AmmoType.Laser:
             {
-                Fire(bulletPrefab, bulletSpeed);
+                Fire(bulletPrefab, bulletSpeed, laserShootSound);
 
                 // Fire rate = 1 / shotsPerSecond, with stationary penalty if parked
                 float cd = fireCooldown;
@@ -181,7 +182,7 @@ public class Player_Shooting : MonoBehaviour
 
             case AmmoType.Missile:
             {
-                Fire(missilePrefab, missileSpeed);
+                Fire(missilePrefab, missileSpeed, missileShootSound);
                 nextFireAt = Time.time + missileCooldown;
                 // Missiles do not add heat (tactical)
                 break;
@@ -207,11 +208,11 @@ public class Player_Shooting : MonoBehaviour
         return speed < stationarySpeedThreshold;
     }
 
-    void Fire(GameObject prefab, float speed)
+    void Fire(GameObject prefab, float speed, AudioClip sfx)
     {
         if (!prefab) return;
 
-        if (shootSound) audioSource.PlayOneShot(shootSound);
+        if (sfx) audioSource.PlayOneShot(sfx);
 
         Vector3 spawnPos = transform.position + new Vector3(0f, 0.8f, 0f);
         GameObject projectile = Instantiate(prefab, spawnPos, Quaternion.identity);

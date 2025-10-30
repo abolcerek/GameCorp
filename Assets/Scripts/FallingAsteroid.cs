@@ -64,7 +64,7 @@ public class FallingAsteroid : MonoBehaviour
         }
     }
 
-    void TakeDamage(int dmg)
+    public void TakeDamage(int dmg)
     {
         health -= dmg;
 

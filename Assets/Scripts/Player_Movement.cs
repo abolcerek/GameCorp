@@ -3,6 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player_Movement : MonoBehaviour
 {
+    [Header("Player Sprites")]
+    public SpriteRenderer shipRenderer;
+    public Sprite defaultShipSprite;
+    public Sprite missileShipSprite;
+
     public string leftKey = "left";
     public string rightKey = "right";
     public string upKey = "up";
@@ -17,6 +22,20 @@ public class Player_Movement : MonoBehaviour
     private float dy;
 
     private Rigidbody2D rb;
+
+    void Start()
+{
+    // If you already have Start(), just add inside it
+    SpriteRenderer sr = GetComponent<SpriteRenderer>();
+
+    bool missilesUnlocked = PlayerPrefs.GetInt("MissilesUnlocked", 0) == 1;
+
+    if (missilesUnlocked)
+        sr.sprite = missileShipSprite;
+    else
+        sr.sprite = defaultShipSprite;
+}
+
 
     void Awake()
     {
