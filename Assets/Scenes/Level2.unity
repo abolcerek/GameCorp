@@ -441,6 +441,64 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &268421122
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 268421124}
+  - component: {fileID: 268421123}
+  m_Layer: 0
+  m_Name: GameManager_Level2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &268421123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268421122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4888de963abf43379c613e46cc9ce29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager_Level2
+  startingLives: 3
+  gameOverText: {fileID: 0}
+  restartButton: {fileID: 0}
+  levelCompleteText: {fileID: 0}
+  isGameOver: 0
+  lifeIcons:
+  - {fileID: 580140686}
+  - {fileID: 303898863}
+  - {fileID: 42366011}
+  lifeLostSound: {fileID: 8300000, guid: 75f92ac4a27d3476bb90f754e2e66a90, type: 3}
+  sessionGoo: 0
+  gooHudText: {fileID: 0}
+  shieldUnlockThreshold: 5
+  levelDuration: 90
+--- !u!4 &268421124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268421122}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &299866775
 GameObject:
   m_ObjectHideFlags: 0
@@ -524,7 +582,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1579390545}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: RestartGame
         m_Mode: 1
@@ -877,7 +935,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f5fed8647524c64ae6b87c1b0b704d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  GameManager: {fileID: 0}
   lives: 0
 --- !u!114 &354178308
 MonoBehaviour:
@@ -1197,6 +1254,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 416615831}
   m_CullTransparentMesh: 1
+--- !u!1 &509828241
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 509828243}
+  - component: {fileID: 509828242}
+  m_Layer: 0
+  m_Name: AlienSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &509828242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509828241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03a5bc11bf4c14dafb04fa34a9aac444, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AlienSpawner
+  normalAlien: {fileID: 733046933792073262, guid: 1223c0c400dc04130b4379ba8d203688, type: 3}
+  rareAlien: {fileID: 733046933792073262, guid: e7a8f8be9864d4f2b9506662720f4d31, type: 3}
+  spawnRate: 1.5
+  spawnHeightOffset: 1.5
+  edgePadding: 0.5
+  gameDuration: 90
+--- !u!4 &509828243
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509828241}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &580140684
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,7 +1670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd3ff3e46dbc44b64beef89a5378bf7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  shooter: {fileID: 0}
+  shooter: {fileID: 354178308}
   slider: {fileID: 1289138804}
   label: {fileID: 0}
   fillImage: {fileID: 1481824661}
@@ -1849,63 +1956,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1537758613}
   m_CullTransparentMesh: 1
---- !u!1 &1579390544
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1579390546}
-  - component: {fileID: 1579390545}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1579390545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1579390544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 915b645f274414eab8121888a834f69c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  startingLives: 3
-  gameOverText: {fileID: 314357374}
-  restartButton: {fileID: 299866775}
-  levelCompleteText: {fileID: 0}
-  isGameOver: 0
-  lifeIcons:
-  - {fileID: 580140686}
-  - {fileID: 303898863}
-  - {fileID: 42366011}
-  lifeLostSound: {fileID: 8300000, guid: 75f92ac4a27d3476bb90f754e2e66a90, type: 3}
-  sessionShards: 0
-  shardsHudText: {fileID: 0}
-  missileUnlockThreshold: 5
---- !u!4 &1579390546
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1579390544}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1441.2201, y: 355.37143, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1790891365
 GameObject:
   m_ObjectHideFlags: 0
@@ -2366,6 +2416,7 @@ SceneRoots:
   - {fileID: 354178312}
   - {fileID: 1809650235}
   - {fileID: 1352457105}
-  - {fileID: 1579390546}
   - {fileID: 186735938}
   - {fileID: 2075391512}
+  - {fileID: 509828243}
+  - {fileID: 268421124}

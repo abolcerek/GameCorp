@@ -171,6 +171,6 @@ MonoBehaviour:
   fallSpeed: 2
   burstVelocityRangeX: {x: -1, y: 1}
   burstVelocityRangeY: {x: 0.5, y: 2}
-  gooValue: 5
+  gooValue: 1
   pulseSpeed: 2
   pulseAmount: 0.2

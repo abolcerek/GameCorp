@@ -108,7 +108,7 @@ public class Alien : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.isGameOver)
+        if (GameManager_Level2.Instance != null && GameManager_Level2.Instance.isGameOver)
             return;
 
         MoveZigzag();
@@ -252,7 +252,7 @@ public class Alien : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (GameManager.Instance != null && GameManager.Instance.isGameOver)
+        if (GameManager_Level2.Instance != null && GameManager_Level2.Instance.isGameOver)
             return;
 
         if (other.CompareTag("Bullet"))

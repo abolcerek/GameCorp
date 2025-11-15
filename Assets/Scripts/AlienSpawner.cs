@@ -19,14 +19,14 @@ public class AlienSpawner : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.isGameOver) return;
+        if (GameManager_Level2.Instance.isGameOver) return;
 
         timer += Time.deltaTime;
         elapsed += Time.deltaTime;
 
         if (elapsed >= gameDuration)
         {
-            GameManager.Instance.GameOverByTimer();
+            GameManager_Level2.Instance.GameOverByTimer();
             return;
         }
 

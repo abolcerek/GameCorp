@@ -52,12 +52,12 @@ public class Goo : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && GameManager.Instance != null)
+        if (other.CompareTag("Player") && GameManager_Level2.Instance != null)
         {
-            // Add goo value to shards (or you could create a separate goo counter)
-            GameManager.Instance.AddShard(gooValue);
+            // Add goo to Level 2's goo counter
+            GameManager_Level2.Instance.AddGoo(gooValue);
             
-            Debug.Log($"[Goo] Player collected goo worth {gooValue} shards!");
+            Debug.Log($"[Goo] Player collected goo worth {gooValue}!");
             
             // Optional: Play collection sound
             // AudioSource.PlayClipAtPoint(collectSound, transform.position);

@@ -2,32 +2,31 @@ using UnityEngine;
 
 public class Player_Health : MonoBehaviour
 {
-    public GameManager GameManager;
     public int lives;
 
     void Start()
     {
-        // Auto-find GameManager if not assigned in Inspector
-        if (GameManager == null)
-        {
-            GameManager = GameManager.Instance;
-        }
-
-        if (GameManager == null)
-        {
-            Debug.LogError("[Player_Health] GameManager not found! Make sure GameManager exists in the scene.");
-        }
+        // Lives will be synced from whichever GameManager is active
     }
 
     public void TakeDamage(int amount = 1)
     {
-        if (GameManager == null)
+        // Try Level 1 GameManager first
+        if (GameManager.Instance != null)
         {
-            Debug.LogError("[Player_Health] GameManager is null! Cannot take damage.");
+            GameManager.Instance.LoseLife(amount);
+            lives = GameManager.Instance.CurrentLives();
             return;
         }
 
-        GameManager.LoseLife(amount);
-        lives = GameManager.CurrentLives();
+        // Try Level 2 GameManager
+        if (GameManager_Level2.Instance != null)
+        {
+            GameManager_Level2.Instance.LoseLife(amount);
+            lives = GameManager_Level2.Instance.CurrentLives();
+            return;
+        }
+
+        Debug.LogError("[Player_Health] No GameManager found! Cannot take damage.");
     }
 }
