@@ -22,6 +22,18 @@ public class Bullet : MonoBehaviour
         Invoke(nameof(Kill), lifetime);
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+    if (other.CompareTag("Enemy"))  // Make sure aliens are tagged "Enemy"
+    {
+        Alien alien = other.GetComponent<Alien>();
+        if (alien != null)
+            alien.TakeDamage(1);
+        
+        Destroy(gameObject);
+    }
+    }
+
     void OnDisable() => CancelInvoke();
 
     void Kill() => Destroy(gameObject);

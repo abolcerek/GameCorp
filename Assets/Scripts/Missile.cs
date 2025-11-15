@@ -40,24 +40,27 @@ public class Missile : MonoBehaviour
     {
         if (detonated) return;
 
-        // Try to find the asteroid script
-        var asteroid = other.GetComponentInParent<FallingAsteroid>();
+        bool hitSomething = false;
 
+        // Check for alien
+        var alien = other.GetComponent<Alien>();
+        if (alien != null)
+        {
+            alien.TakeDamage(damage); // 999 damage = instant kill
+            hitSomething = true;
+        }
+
+        // Check for asteroid
+        var asteroid = other.GetComponentInParent<FallingAsteroid>();
         if (asteroid != null)
         {
-            // Prefer ApplyDamage if you added the wrapper; else TakeDamage works too
-            asteroid.TakeDamage(damage);   // or asteroid.ApplyDamage(damage);
+            asteroid.TakeDamage(damage);
+            hitSomething = true;
         }
-        else if (!other.CompareTag("Asteroid"))
-        {
-            // Not an asteroid → ignore (or detonate anyway if you want)
+
+        // If we didn't hit anything valid, don't detonate
+        if (!hitSomething)
             return;
-        }
-        else
-        {
-            // Fallback: tagged Asteroid with no script
-            Destroy(other);
-        }
 
         // Spawn impact VFX at contact point
         if (hitExplosionPrefab)
