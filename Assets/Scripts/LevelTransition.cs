@@ -9,16 +9,9 @@ public class LevelTransition : MonoBehaviour
     public bool isInTransition = false;
     public bool isWaitingForChoice = false;
 
-    [Header("Backgrounds - Important!")]
-    [Tooltip("Assign BOTH background objects, or just use a single static background")]
-    public ScrollingBackground[] backgroundScrollers;  // Changed to array for both backgrounds
-    public Sprite blackHoleSprite;
-    public Sprite bossFightSprite;
-    
-    [Header("Alternative: Use Static Backgrounds")]
-    [Tooltip("If checked, creates a static overlay instead of changing scrolling backgrounds")]
-    public bool useStaticOverlay = true;
-    public GameObject staticBackgroundOverlay;  // Assign a full-screen image
+    [Header("Simple Background System")]
+    public GameObject blackHoleBackground;  // Assign your black hole background GameObject
+    public GameObject bossFightBackground;  // Assign your boss fight background GameObject
 
     [Header("UI Elements")]
     public GameObject transitionUI;           // Panel for the choice
@@ -54,9 +47,12 @@ public class LevelTransition : MonoBehaviour
             fadeImage.color = c;
         }
 
-        // Hide static overlay if using it
-        if (staticBackgroundOverlay)
-            staticBackgroundOverlay.SetActive(false);
+        // Make sure both backgrounds are hidden at start
+        if (blackHoleBackground)
+            blackHoleBackground.SetActive(false);
+        
+        if (bossFightBackground)
+            bossFightBackground.SetActive(false);
     }
 
     void Update()
@@ -98,77 +94,32 @@ public class LevelTransition : MonoBehaviour
         if (Player_Movement.Instance)
             Player_Movement.Instance.enableInput(false);
 
-        // Change to black hole background
-        if (useStaticOverlay)
+        // Hide scrolling backgrounds
+        HideScrollingBackgrounds();
+
+        // Show black hole background
+        if (blackHoleBackground)
         {
-            // Use static overlay approach
-            ShowStaticBackground(blackHoleSprite);
-        }
-        else
-        {
-            // Change scrolling backgrounds (changes ALL background objects)
-            ChangeAllBackgrounds(blackHoleSprite);
+            blackHoleBackground.SetActive(true);
+            Debug.Log("[LevelTransition] Black hole background shown");
         }
 
         // Show choice UI after a brief delay
         Invoke(nameof(ShowChoice), 1f);
     }
 
-    void ShowStaticBackground(Sprite sprite)
+    void HideScrollingBackgrounds()
     {
-        if (staticBackgroundOverlay)
-        {
-            staticBackgroundOverlay.SetActive(true);
-            Image overlayImage = staticBackgroundOverlay.GetComponent<Image>();
-            if (overlayImage)
-            {
-                overlayImage.sprite = sprite;
-                overlayImage.color = Color.white; // Make sure it's visible
-            }
-            
-            // Stop scrolling backgrounds
-            StopAllScrolling();
-            
-            Debug.Log($"[LevelTransition] Showing static overlay: {sprite.name}");
-        }
-        else
-        {
-            Debug.LogWarning("[LevelTransition] No static overlay assigned! Falling back to scrolling backgrounds.");
-            ChangeAllBackgrounds(sprite);
-        }
-    }
-
-    void ChangeAllBackgrounds(Sprite newSprite)
-    {
-        if (backgroundScrollers == null || backgroundScrollers.Length == 0)
-        {
-            Debug.LogWarning("[LevelTransition] No background scrollers assigned!");
-            return;
-        }
-
-        // Change ALL background objects to the same sprite
-        foreach (var bg in backgroundScrollers)
-        {
-            if (bg != null && newSprite)
-            {
-                bg.ChangeSprite(newSprite);
-            }
-        }
-
-        Debug.Log($"[LevelTransition] Changed {backgroundScrollers.Length} backgrounds to: {newSprite.name}");
-    }
-
-    void StopAllScrolling()
-    {
-        if (backgroundScrollers == null) return;
-
-        foreach (var bg in backgroundScrollers)
+        // Find and disable ALL scrolling backgrounds
+        ScrollingBackground[] backgrounds = FindObjectsByType<ScrollingBackground>(FindObjectsSortMode.None);
+        foreach (var bg in backgrounds)
         {
             if (bg != null)
             {
-                bg.enabled = false; // Stop scrolling
+                bg.gameObject.SetActive(false);
             }
         }
+        Debug.Log($"[LevelTransition] Hid {backgrounds.Length} scrolling backgrounds");
     }
 
     void ShowChoice()
@@ -183,12 +134,12 @@ public class LevelTransition : MonoBehaviour
         if (transitionText)
         {
             transitionText.gameObject.SetActive(true);
-            transitionText.text = "You Have Encountered a Black Hole! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPress C to Continue\n\nPress R to Return to Menu";
+            transitionText.text = "You Have Encountered a Black Hole!\n\n\n\nPress C to Continue\n\nPress R to Return to Menu";
             
             // Force it to render on top
             Canvas.ForceUpdateCanvases();
             
-            Debug.Log($"[LevelTransition] Text activated: {transitionText.gameObject.name}, Active: {transitionText.gameObject.activeInHierarchy}");
+            Debug.Log($"[LevelTransition] Text activated");
         }
 
         Debug.Log("[LevelTransition] Waiting for player choice...");
@@ -234,14 +185,27 @@ public class LevelTransition : MonoBehaviour
     {
         Debug.Log("[LevelTransition] Starting boss fight in same scene!");
 
-        // Change to boss fight background
-        if (useStaticOverlay)
+        // Reset camera to ensure proper view
+        Camera mainCam = Camera.main;
+        if (mainCam)
         {
-            ShowStaticBackground(bossFightSprite);
+            mainCam.orthographicSize = 5f;
+            mainCam.transform.position = new Vector3(0, 0, -10);
+            Debug.Log("[LevelTransition] Camera reset to default view");
         }
-        else
+
+        // Hide black hole background
+        if (blackHoleBackground)
         {
-            ChangeAllBackgrounds(bossFightSprite);
+            blackHoleBackground.SetActive(false);
+            Debug.Log("[LevelTransition] Black hole background hidden");
+        }
+
+        // Show boss fight background
+        if (bossFightBackground)
+        {
+            bossFightBackground.SetActive(true);
+            Debug.Log("[LevelTransition] Boss fight background shown");
         }
 
         // Re-enable player input
@@ -256,7 +220,7 @@ public class LevelTransition : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[LevelTransition] No BossSpawner found in scene! Add BossSpawner when ready for boss fight.");
+            Debug.LogWarning("[LevelTransition] No BossSpawner found in scene!");
         }
     }
 
