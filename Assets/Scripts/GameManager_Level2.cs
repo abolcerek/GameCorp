@@ -126,16 +126,85 @@ public class GameManager_Level2 : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
-        Debug.Log("[GameManager_Level2] Time's up! Level Complete!");
-        Player_Movement.Instance.enableInput(false);
+        Debug.Log("[GameManager_Level2] Time's up! Checking for boss transition...");
+        
+        // DON'T disable player input yet - let them keep playing!
+        // Player_Movement.Instance.enableInput(false);
 
-        FreezeWorld();
+        // Stop spawning more aliens
+        AlienSpawner alienSpawner = FindFirstObjectByType<AlienSpawner>();
+        if (alienSpawner != null)
+            alienSpawner.enabled = false;
 
-        // Save goo progress
-        PersistGooAndCheckUnlock();
+        // Clean up any aliens that are off-screen (above camera)
+        CleanupOffScreenAliens();
 
-        // Return to main menu after winning
-        SceneManager.LoadScene("MainMenu");
+        // Check if all enemies are cleared
+        if (LevelTransition.Instance && LevelTransition.Instance.AreAllEnemiesCleared())
+        {
+            Debug.Log("[GameManager_Level2] All enemies cleared! Starting transition to boss...");
+            
+            // Save progress
+            PersistGooAndCheckUnlock();
+            
+            // Start the black hole transition (this will disable input)
+            LevelTransition.Instance.StartTransition();
+        }
+        else
+        {
+            Debug.Log("[GameManager_Level2] Enemies still on screen, waiting for clear...");
+            
+            // Wait for enemies to be cleared, then transition
+            StartCoroutine(WaitForEnemiesClear());
+        }
+    }
+
+    void CleanupOffScreenAliens()
+    {
+        Camera cam = Camera.main;
+        if (!cam) return;
+
+        float halfHeight = cam.orthographicSize;
+        float topOfScreen = cam.transform.position.y + halfHeight;
+
+        Alien[] aliens = FindObjectsByType<Alien>(FindObjectsSortMode.None);
+        int destroyedCount = 0;
+
+        foreach (var alien in aliens)
+        {
+            // If alien is above the screen (not visible yet), destroy it
+            if (alien.transform.position.y > topOfScreen + 0.5f)
+            {
+                Destroy(alien.gameObject);
+                destroyedCount++;
+            }
+        }
+
+        if (destroyedCount > 0)
+        {
+            Debug.Log($"[GameManager_Level2] Cleaned up {destroyedCount} off-screen aliens.");
+        }
+    }
+
+    System.Collections.IEnumerator WaitForEnemiesClear()
+    {
+        // Wait until all enemies and bullets are gone
+        while (true)
+        {
+            if (LevelTransition.Instance && LevelTransition.Instance.AreAllEnemiesCleared())
+            {
+                Debug.Log("[GameManager_Level2] Enemies cleared! Starting transition...");
+                
+                // Save progress
+                PersistGooAndCheckUnlock();
+                
+                // Start the black hole transition
+                LevelTransition.Instance.StartTransition();
+                yield break;
+            }
+            
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     public void FreezeWorld()

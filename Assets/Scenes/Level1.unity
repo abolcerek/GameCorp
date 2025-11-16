@@ -593,6 +593,10 @@ MonoBehaviour:
   shipRenderer: {fileID: 0}
   defaultShipSprite: {fileID: -1157674363055850914, guid: ad44c6c044f8b40749f100a0f39413f0, type: 3}
   missileShipSprite: {fileID: 21300000, guid: f49f33b13c7a04e11b91de71436c361d, type: 3}
+  defaultShip_2Shields: {fileID: 21300000, guid: ee7e232b768f34d9bb659eb93667641c, type: 3}
+  defaultShip_1Shield: {fileID: 21300000, guid: 6cdd5348da2de459d968417a23975e92, type: 3}
+  missileShip_2Shields: {fileID: 21300000, guid: d1fb1c299db5b4db9b1b5adae8d4d67a, type: 3}
+  missileShip_1Shield: {fileID: 21300000, guid: 6353efe66de044dbd8cd852e295bdb24, type: 3}
   leftKey: 97
   rightKey: 100
   upKey: 119
@@ -611,7 +615,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f5fed8647524c64ae6b87c1b0b704d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  GameManager: {fileID: 1335903510}
+  maxShields: 2
+  hitFlashDuration: 0.1
+  shieldHitColor: {r: 0, g: 1, b: 1, a: 1}
+  damageHitColor: {r: 1, g: 0, b: 0, a: 1}
   lives: 0
 --- !u!212 &349032155
 SpriteRenderer:

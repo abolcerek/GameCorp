@@ -16,8 +16,9 @@ public class MenuManager : MonoBehaviour
     public Button level2Button;
     public Button level3Button;
 
-    [Header("Gameplay")]
-    public string gameplaySceneName = "Game";
+    [Header("Levels")]
+    public string Level1 = "Level1";
+    public string Level2 = "Level2";
 
     // ===== SHOP UI =====
     [Header("Shop UI - Missile")]
@@ -52,8 +53,6 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         ShowMain();
-        if (level2Button) level2Button.interactable = false;
-        if (level3Button) level3Button.interactable = false;
         RefreshShopUI();
     }
 
@@ -148,9 +147,8 @@ public class MenuManager : MonoBehaviour
 
     public void BackToMain() => ShowMain();
 
-    public void SelectLevel1() { SceneManager.LoadScene(gameplaySceneName); }
-    public void SelectLevel2_Placeholder() { Debug.Log("Level 2 coming soon!"); }
-    public void SelectLevel3_Placeholder() { Debug.Log("Level 3 coming soon!"); }
+    public void SelectLevel1() { SceneManager.LoadScene(Level1); }
+    public void SelectLevel2() { SceneManager.LoadScene(Level2); }
 
     public void QuitGame()
     {
