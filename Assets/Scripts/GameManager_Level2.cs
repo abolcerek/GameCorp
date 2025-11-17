@@ -11,6 +11,7 @@ public class GameManager_Level2 : MonoBehaviour
     public GameObject levelCompleteText;
     private int lives;
     public bool isGameOver = false;
+    public bool isBossFight = false;  // NEW: Track if we're in boss fight
     public static GameManager_Level2 Instance;
     public Image[] lifeIcons; 
 
@@ -124,7 +125,9 @@ public class GameManager_Level2 : MonoBehaviour
     public void GameOverByTimer()
     {
         if (isGameOver) return;
-        isGameOver = true;
+        
+        // Mark that timer ended (but not truly game over yet)
+        isBossFight = true;
 
         Debug.Log("[GameManager_Level2] Time's up! Checking for boss transition...");
         

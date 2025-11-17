@@ -134,7 +134,7 @@ public class LevelTransition : MonoBehaviour
         if (transitionText)
         {
             transitionText.gameObject.SetActive(true);
-            transitionText.text = "You Have Encountered a Black Hole!\n\n\n\nPress C to Continue\n\nPress R to Return to Menu";
+            transitionText.text = "You Have Encountered a Black Hole!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPress C to Continue\n\nPress R to Return to Menu";
             
             // Force it to render on top
             Canvas.ForceUpdateCanvases();

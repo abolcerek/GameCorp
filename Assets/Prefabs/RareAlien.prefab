@@ -161,7 +161,7 @@ MonoBehaviour:
   shootInterval: 2
   shootDelay: 1
   bulletSpeed: 4
-  gooDropChance: 0.9
+  gooDropChance: 0.4
   gooPrefab: {fileID: 7121538595042065036, guid: 4d27fe45981d74057908f24ef3681d7c, type: 3}
   explosionPrefab: {fileID: 653968807126491248, guid: ad4db6a4da2214cac88be40de662eb7d, type: 3}
   explosionSound: {fileID: 8300000, guid: 3c2af71ba4f484997a19fdeb9e6842c0, type: 3}

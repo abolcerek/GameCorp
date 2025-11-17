@@ -14,34 +14,18 @@ public class BossHealthBar : MonoBehaviour
     public Color halfHealthColor = Color.yellow;
     public Color lowHealthColor = Color.red;
 
-    [Header("Follow Boss")]
-    public Transform bossTransform;
-    public Vector3 offset = new Vector3(0, 1.5f, 0);  // Above boss
-
     private int maxHealth;
     private int currentHealth;
-    private Camera mainCamera;
 
     void Start()
     {
-        mainCamera = Camera.main;
-
         if (!healthSlider)
             healthSlider = GetComponent<Slider>();
 
         if (!fillImage && healthSlider)
             fillImage = healthSlider.fillRect.GetComponent<Image>();
-    }
 
-    void LateUpdate()
-    {
-        // Follow boss position
-        if (bossTransform && mainCamera)
-        {
-            Vector3 worldPos = bossTransform.position + offset;
-            Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
-            transform.position = screenPos;
-        }
+        Debug.Log("[BossHealthBar] Health bar initialized at top of screen");
     }
 
     public void SetMaxHealth(int max)
@@ -56,6 +40,7 @@ public class BossHealthBar : MonoBehaviour
         }
 
         UpdateHealthText();
+        Debug.Log($"[BossHealthBar] Max health set to {max}");
     }
 
     public void SetHealth(int health)
@@ -91,12 +76,7 @@ public class BossHealthBar : MonoBehaviour
     {
         if (healthText)
         {
-            healthText.text = $"{currentHealth}/{maxHealth}";
+            healthText.text = $"Boss: {currentHealth}/{maxHealth}";
         }
-    }
-
-    public void SetBoss(Transform boss)
-    {
-        bossTransform = boss;
     }
 }

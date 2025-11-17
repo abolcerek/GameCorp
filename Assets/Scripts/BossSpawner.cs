@@ -7,6 +7,10 @@ public class BossSpawner : MonoBehaviour
     public Vector3 bossSpawnPosition = new Vector3(0, 6, -1);
     public float spawnDelay = 2f;
 
+    [Header("Sounds")]
+    public AudioClip bossSpawnSound;  // NEW: Sound plays before boss spawns
+    private AudioSource audioSource;
+
     [Header("Health Bar")]
     public GameObject healthBarPrefab;  // Assign BossHealthBar prefab
     public Canvas canvas;  // Reference to main Canvas
@@ -28,7 +32,33 @@ public class BossSpawner : MonoBehaviour
         }
 
         Debug.Log("[BossSpawner] Spawning boss...");
-        Invoke(nameof(DoSpawnBoss), spawnDelay);
+
+        // Setup audio source if not already created
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+            audioSource.volume = 0.8f;
+        }
+
+        // Play spawn sound first
+        if (bossSpawnSound && audioSource)
+        {
+            audioSource.PlayOneShot(bossSpawnSound);
+            Debug.Log("[BossSpawner] Playing boss spawn sound...");
+            
+            // Calculate delay: use sound length or default delay, whichever is longer
+            float soundLength = bossSpawnSound.length;
+            float totalDelay = Mathf.Max(spawnDelay, soundLength);
+            
+            Debug.Log($"[BossSpawner] Boss will appear in {totalDelay} seconds (after sound)");
+            Invoke(nameof(DoSpawnBoss), totalDelay);
+        }
+        else
+        {
+            // No sound, use default delay
+            Invoke(nameof(DoSpawnBoss), spawnDelay);
+        }
     }
 
     void DoSpawnBoss()
@@ -51,19 +81,18 @@ public class BossSpawner : MonoBehaviour
             currentHealthBar = Instantiate(healthBarPrefab, canvas.transform);
             
             BossHealthBar healthBar = currentHealthBar.GetComponent<BossHealthBar>();
-            if (healthBar)
-            {
-                healthBar.SetBoss(currentBoss.transform);
-            }
-
+            
             // Connect health bar to boss
             BossAlien bossAlien = currentBoss.GetComponent<BossAlien>();
             if (bossAlien && healthBar)
             {
                 bossAlien.healthBar = healthBar;
+                Debug.Log("[BossSpawner] Boss health bar created and connected!");
             }
-
-            Debug.Log("[BossSpawner] Boss health bar created and connected!");
+            else
+            {
+                Debug.LogWarning("[BossSpawner] Could not connect health bar to boss!");
+            }
         }
         else
         {

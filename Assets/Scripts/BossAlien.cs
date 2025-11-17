@@ -44,15 +44,24 @@ public class BossAlien : MonoBehaviour
     public AudioClip explosionSound;
     public float deathDelay = 2f;
 
+    [Header("Sounds")]
+    public AudioClip deathSound;    // Boss death sound
+
     [Header("UI")]
     public BossHealthBar healthBar;
 
     private Vector2 playerLastKnownPosition;
     private bool isDead = false;
+    private AudioSource audioSource;  // Audio source for boss sounds
 
     void Start()
     {
         currentHealth = maxHealth;
+
+        // Setup audio for death sound only (spawn sound plays in BossSpawner)
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.volume = 0.7f;
 
         // Setup sprite
         if (!spriteRenderer)
@@ -77,8 +86,8 @@ public class BossAlien : MonoBehaviour
         }
 
         // Camera shake on entrance
-        if (CameraShake.Instance)
-            CameraShake.Instance.Shake(0.5f, 0.5f);
+        if (BossShake.Instance)
+            BossShake.Instance.Shake(0.5f, 0.5f);
 
         Debug.Log("[BossAlien] Boss spawned with " + maxHealth + " HP!");
     }
@@ -250,8 +259,8 @@ public class BossAlien : MonoBehaviour
         StartCoroutine(FlashDamage());
 
         // Camera shake on hit
-        if (CameraShake.Instance)
-            CameraShake.Instance.Shake(0.15f, 0.2f);
+        if (BossShake.Instance)
+            BossShake.Instance.Shake(0.15f, 0.2f);
 
         Debug.Log($"[BossAlien] Took {damage} damage! HP: {currentHealth}/{maxHealth}");
 
@@ -284,8 +293,8 @@ public class BossAlien : MonoBehaviour
         StopAllCoroutines();
 
         // Big camera shake
-        if (CameraShake.Instance)
-            CameraShake.Instance.Shake(1f, 1f);
+        if (BossShake.Instance)
+            BossShake.Instance.Shake(1f, 1f);
 
         // Play death sequence
         StartCoroutine(DeathSequence());
@@ -293,6 +302,13 @@ public class BossAlien : MonoBehaviour
 
     IEnumerator DeathSequence()
     {
+        // Play death sound
+        if (deathSound && audioSource)
+        {
+            audioSource.PlayOneShot(deathSound);
+            Debug.Log("[BossAlien] Playing death sound!");
+        }
+
         // Flash a few times
         for (int i = 0; i < 5; i++)
         {
