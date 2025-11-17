@@ -163,8 +163,8 @@ MonoBehaviour:
   bulletSpeed: 4
   gooDropChance: 0.4
   gooPrefab: {fileID: 0}
-  explosionPrefab: {fileID: 653968807126491248, guid: 9f410ee996a1341f596cf3da85c1a852, type: 3}
-  explosionSound: {fileID: 0}
+  explosionPrefab: {fileID: 653968807126491248, guid: 97bbef9ea040f4002b4ab24b7810ad65, type: 3}
+  explosionSound: {fileID: 8300000, guid: 036ac46ee9e024450b71805c7bb0773f, type: 3}
   spriteRenderer: {fileID: 0}
   damageFlashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
