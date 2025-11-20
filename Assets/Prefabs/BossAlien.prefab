@@ -187,5 +187,6 @@ MonoBehaviour:
   explosionPrefab: {fileID: 653968807126491248, guid: 4ffa6044bc9be4781b4da65df345c013, type: 3}
   explosionSound: {fileID: 8300000, guid: dfe4bad99389147b5be145ea16ec593e, type: 3}
   deathDelay: 2
+  hitSound: {fileID: 8300000, guid: b928b6ebbc1f9403886ce73639026014, type: 3}
   deathSound: {fileID: 8300000, guid: dfe4bad99389147b5be145ea16ec593e, type: 3}
   healthBar: {fileID: 517785638276764057, guid: 5aee6c20a2a184b719e9e86f15f8098e, type: 3}

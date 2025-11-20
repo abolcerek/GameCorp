@@ -5,14 +5,14 @@ public class Player_Movement : MonoBehaviour
 {
     [Header("Player Sprites - Base")]
     public SpriteRenderer shipRenderer;
-    public Sprite defaultShipSprite;       // No missiles, no shield
-    public Sprite missileShipSprite;       // Missiles unlocked, no shield
+    public Sprite defaultShipSprite;
+    public Sprite missileShipSprite;
 
     [Header("Player Sprites - With Shield")]
-    public Sprite defaultShip_2Shields;    // No missiles, 2 shields
-    public Sprite defaultShip_1Shield;     // No missiles, 1 shield
-    public Sprite missileShip_2Shields;    // Missiles, 2 shields
-    public Sprite missileShip_1Shield;     // Missiles, 1 shield
+    public Sprite defaultShip_2Shields;
+    public Sprite defaultShip_1Shield;
+    public Sprite missileShip_2Shields;
+    public Sprite missileShip_1Shield;
 
     [Header("Movement")]
     public KeyCode leftKey  = KeyCode.LeftArrow;
@@ -28,49 +28,72 @@ public class Player_Movement : MonoBehaviour
     private float dy;
     private Rigidbody2D rb;
     
-    // Shield state tracking
     private bool missilesUnlocked;
     private bool shieldUnlocked;
 
     void Awake()
     {
-        Instance = this;
+        Debug.Log("========================================");
+        Debug.Log("[Player_Movement] AWAKE CALLED!");
+        Debug.Log($"[Player_Movement] GameObject: {gameObject.name}");
+        Debug.Log($"[Player_Movement] Scene: {UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}");
+        Debug.Log("========================================");
+        
+        if (Instance == null)
+        {
+            Instance = this;
+            Debug.Log("[Player_Movement] Instance SET successfully!");
+        }
+        else
+        {
+            Debug.LogError("[Player_Movement] DUPLICATE INSTANCE DETECTED! Destroying!");
+            Destroy(gameObject);
+            return;
+        }
+        
         rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = 0f;
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        if (rb == null)
+        {
+            Debug.LogError("[Player_Movement] NO RIGIDBODY2D FOUND!");
+        }
+        else
+        {
+            rb.gravityScale = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            Debug.Log("[Player_Movement] Rigidbody2D configured successfully");
+        }
         
         if (!shipRenderer)
             shipRenderer = GetComponent<SpriteRenderer>();
+            
+        Debug.Log($"[Player_Movement] Awake complete. canMove = {canMove}");
     }
 
     void Start()
     {
-        // Check what's unlocked
+        Debug.Log("========================================");
+        Debug.Log("[Player_Movement] START CALLED!");
+        Debug.Log($"[Player_Movement] canMove = {canMove}");
+        Debug.Log($"[Player_Movement] Instance is null? {Instance == null}");
+        Debug.Log("========================================");
+        
         missilesUnlocked = PlayerPrefs.GetInt("MissilesUnlocked", 0) == 1;
         shieldUnlocked = PlayerPrefs.GetInt("ShieldUnlocked", 0) == 1;
 
-        // Set initial sprite based on unlocks
-        UpdateSprite(2); // Start with full shields if unlocked
+        UpdateSprite(2);
     }
 
-    /// <summary>
-    /// Updates the player sprite based on missiles unlocked and shield count
-    /// </summary>
-    /// <param name="shieldCount">0 = no shield, 1 = one shield, 2 = two shields</param>
     public void UpdateSprite(int shieldCount)
     {
         if (!shipRenderer) return;
 
-        // If shields aren't unlocked, ignore shield count
         if (!shieldUnlocked)
             shieldCount = 0;
 
-        // Select the appropriate sprite
         Sprite newSprite = null;
 
         if (missilesUnlocked)
         {
-            // Missile variants
             switch (shieldCount)
             {
                 case 2:
@@ -86,7 +109,6 @@ public class Player_Movement : MonoBehaviour
         }
         else
         {
-            // Default variants
             switch (shieldCount)
             {
                 case 2:
@@ -101,7 +123,6 @@ public class Player_Movement : MonoBehaviour
             }
         }
 
-        // Apply sprite if found
         if (newSprite != null)
         {
             shipRenderer.sprite = newSprite;
@@ -115,15 +136,56 @@ public class Player_Movement : MonoBehaviour
 
     void Update()
     {
-        if (!canMove) return;
+        // SPAM DEBUG - Log every 60 frames (once per second at 60fps)
+        if (Time.frameCount % 60 == 0)
+        {
+            Debug.Log($"[Player_Movement] Update running! Frame: {Time.frameCount}, canMove: {canMove}, TimeScale: {Time.timeScale}");
+        }
+        
+        if (!canMove)
+        {
+            // Log this every time if canMove is false
+            if (Time.frameCount % 60 == 0)
+            {
+                Debug.LogWarning("[Player_Movement] canMove is FALSE! Input is disabled!");
+            }
+            return;
+        }
 
         dx = 0f;
         dy = 0f;
 
-        if (Input.GetKey(rightKey)) dx += 1f;
-        if (Input.GetKey(leftKey))  dx -= 1f;
-        if (Input.GetKey(upKey))    dy += 1f;
-        if (Input.GetKey(downKey))  dy -= 1f;
+        // Check if ANY input is happening
+        if (Input.anyKey && Time.frameCount % 30 == 0)
+        {
+            Debug.Log("[Player_Movement] Some key is being pressed!");
+        }
+
+        if (Input.GetKey(rightKey))
+        {
+            Debug.Log("[Player_Movement] RIGHT key pressed!");
+            dx += 1f;
+        }
+        if (Input.GetKey(leftKey))
+        {
+            Debug.Log("[Player_Movement] LEFT key pressed!");
+            dx -= 1f;
+        }
+        if (Input.GetKey(upKey))
+        {
+            Debug.Log("[Player_Movement] UP key pressed!");
+            dy += 1f;
+        }
+        if (Input.GetKey(downKey))
+        {
+            Debug.Log("[Player_Movement] DOWN key pressed!");
+            dy -= 1f;
+        }
+        
+        if (dx != 0 || dy != 0)
+        {
+            Debug.Log($"[Player_Movement] Movement calculated! dx={dx}, dy={dy}");
+        }
     }
 
     void FixedUpdate()
@@ -132,6 +194,12 @@ public class Player_Movement : MonoBehaviour
 
         Vector2 dir = new Vector2(dx, dy);
         rb.linearVelocity = dir * moveSpeed;
+        
+        if (dir.magnitude > 0 && Time.frameCount % 30 == 0)
+        {
+            Debug.Log($"[Player_Movement] FixedUpdate applying velocity: {rb.linearVelocity}");
+        }
+        
         Vector3 pos = transform.position;
         pos.x = Mathf.Clamp(pos.x, -2.5f, 2.5f);
         pos.y = Mathf.Clamp(pos.y, -4.5f, 4.5f);
@@ -140,10 +208,18 @@ public class Player_Movement : MonoBehaviour
 
     public void enableInput(bool flag)
     {
+        Debug.Log("========================================");
+        Debug.Log($"[Player_Movement] enableInput({flag}) CALLED!");
+        Debug.Log($"[Player_Movement] Previous canMove: {canMove}");
+        Debug.Log($"[Player_Movement] Called from: {new System.Diagnostics.StackTrace()}");
+        Debug.Log("========================================");
+        
         canMove = flag;
         if (!flag && rb != null)
         {
             rb.linearVelocity = Vector2.zero;
         }
+        
+        Debug.Log($"[Player_Movement] New canMove: {canMove}");
     }
 }

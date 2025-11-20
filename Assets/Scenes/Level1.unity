@@ -2057,7 +2057,7 @@ MonoBehaviour:
   spawnRate: 0.5
   spawnHeightOffset: 1
   edgePadding: 0.1
-  gameDuration: 90
+  gameDuration: 60
   mediumAsteroidTime: 20
   largeAsteroidTime: 40
 --- !u!4 &1726357320

@@ -45,6 +45,7 @@ public class BossAlien : MonoBehaviour
     public float deathDelay = 2f;
 
     [Header("Sounds")]
+    public AudioClip hitSound;      // NEW: Boss hit sound (plays on damage)
     public AudioClip deathSound;    // Boss death sound
 
     [Header("UI")]
@@ -255,6 +256,13 @@ public class BossAlien : MonoBehaviour
         if (healthBar)
             healthBar.SetHealth(currentHealth);
 
+        // Play hit sound
+        if (hitSound && audioSource)
+        {
+            audioSource.PlayOneShot(hitSound);
+            Debug.Log("[BossAlien] Playing hit sound!");
+        }
+
         // Visual feedback
         StartCoroutine(FlashDamage());
 
@@ -330,8 +338,8 @@ public class BossAlien : MonoBehaviour
         // Notify game manager boss is dead
         if (GameManager_Level2.Instance)
         {
-            // TODO: Add boss victory handling
-            Debug.Log("[BossAlien] Boss defeated! Player wins!");
+            GameManager_Level2.Instance.BossDefeated();
+            Debug.Log("[BossAlien] Boss defeated! Notifying GameManager...");
         }
 
         Destroy(gameObject);

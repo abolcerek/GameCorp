@@ -485,6 +485,8 @@ MonoBehaviour:
   gooHudText: {fileID: 0}
   shieldUnlockThreshold: 5
   levelDuration: 90
+  bossVictoryDelay: 6
+  victorySound: {fileID: 8300000, guid: 7a7e9a26d033f4aa3b38f665ab090e72, type: 3}
 --- !u!4 &268421124
 Transform:
   m_ObjectHideFlags: 0
@@ -1438,7 +1440,7 @@ MonoBehaviour:
   spawnRate: 1.5
   spawnHeightOffset: 1.5
   edgePadding: 0.5
-  gameDuration: 60
+  gameDuration: 20
 --- !u!4 &509828243
 Transform:
   m_ObjectHideFlags: 0
@@ -2251,7 +2253,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4770615165636146363, guid: 63902e80fbcf24094ace15306db51e4b, type: 3}
+  m_Sprite: {fileID: -8966730421890935540, guid: 5069c452cb5ac4001a4a992bdc06a52d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2600,7 +2602,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300000, guid: 46fd9d8a3297c453dafad180dfabd541, type: 3}
+  m_Sprite: {fileID: 2777877048252714783, guid: 5728307c974bf44888049303c5dfeda8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2621,7 +2623,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9, y: 1.5, z: 1}
+  m_LocalScale: {x: 0.7, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2917,7 +2919,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1902131661917579599, guid: 1bdd3f71dab79469c96b21e29c3d1c8b, type: 3}
+  m_Sprite: {fileID: -4075960468367953473, guid: 295fbf0c3bf05418b813bf2682a769c8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

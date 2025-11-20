@@ -11,7 +11,7 @@ public class GameManager_Level2 : MonoBehaviour
     public GameObject levelCompleteText;
     private int lives;
     public bool isGameOver = false;
-    public bool isBossFight = false;  // NEW: Track if we're in boss fight
+    public bool isBossFight = false;
     public static GameManager_Level2 Instance;
     public Image[] lifeIcons; 
 
@@ -20,14 +20,17 @@ public class GameManager_Level2 : MonoBehaviour
     private AudioSource audioSource;
 
     [Header("Level 2 Rewards - Goo")]
-    public int sessionGoo = 0;  // Goo collected this session
-    public TMPro.TextMeshProUGUI gooHudText;  // Display goo count in-game
-    public int shieldUnlockThreshold = 15;  // Goo needed for shield
+    public int sessionGoo = 0;
+    public TMPro.TextMeshProUGUI gooHudText;
+    public int shieldUnlockThreshold = 15;
 
     [Header("Level 2 Timing")]
-    public float levelDuration = 90f;  // How long Level 2 lasts
+    public float levelDuration = 90f;
+    public float bossVictoryDelay = 3f;
 
-    // PlayerPrefs keys
+    [Header("Victory")]
+    public AudioClip victorySound;
+
     const string TotalGooKey = "TotalGoo";
     const string ShieldUnlockedKey = "ShieldUnlocked";
 
@@ -40,9 +43,19 @@ public class GameManager_Level2 : MonoBehaviour
 
     void Start()
     {
+        // FIX: Ensure time is running and player can move!
+        Time.timeScale = 1f;
+        
         lives = startingLives;
         UpdateUI();
         UpdateGooHUD();
+        
+        // FIX: Enable player input when level starts!
+        if (Player_Movement.Instance)
+        {
+            Player_Movement.Instance.enableInput(true);
+            Debug.Log("[GameManager_Level2] Player input ENABLED on start!");
+        }
     }
 
     public void SetLives(int value)
@@ -86,11 +99,9 @@ public class GameManager_Level2 : MonoBehaviour
 
     void PersistGooAndCheckUnlock()
     {
-        // Save goo
         int totalGoo = PlayerPrefs.GetInt(TotalGooKey, 0) + sessionGoo;
         PlayerPrefs.SetInt(TotalGooKey, totalGoo);
 
-        // Check shield unlock
         if (totalGoo >= shieldUnlockThreshold)
             PlayerPrefs.SetInt(ShieldUnlockedKey, 1);
 
@@ -105,14 +116,13 @@ public class GameManager_Level2 : MonoBehaviour
         isGameOver = true;
 
         Debug.Log("[GameManager_Level2] Game Over!");
-        Player_Movement.Instance.enableInput(false);
+        
+        if (Player_Movement.Instance)
+            Player_Movement.Instance.enableInput(false);
 
         FreezeWorld();
-
-        // Save goo progress
         PersistGooAndCheckUnlock();
-
-        // Return to main menu
+        
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -126,38 +136,25 @@ public class GameManager_Level2 : MonoBehaviour
     {
         if (isGameOver) return;
         
-        // Mark that timer ended (but not truly game over yet)
         isBossFight = true;
 
         Debug.Log("[GameManager_Level2] Time's up! Checking for boss transition...");
         
-        // DON'T disable player input yet - let them keep playing!
-        // Player_Movement.Instance.enableInput(false);
-
-        // Stop spawning more aliens
         AlienSpawner alienSpawner = FindFirstObjectByType<AlienSpawner>();
         if (alienSpawner != null)
             alienSpawner.enabled = false;
 
-        // Clean up any aliens that are off-screen (above camera)
         CleanupOffScreenAliens();
 
-        // Check if all enemies are cleared
         if (LevelTransition.Instance && LevelTransition.Instance.AreAllEnemiesCleared())
         {
             Debug.Log("[GameManager_Level2] All enemies cleared! Starting transition to boss...");
-            
-            // Save progress
             PersistGooAndCheckUnlock();
-            
-            // Start the black hole transition (this will disable input)
             LevelTransition.Instance.StartTransition();
         }
         else
         {
             Debug.Log("[GameManager_Level2] Enemies still on screen, waiting for clear...");
-            
-            // Wait for enemies to be cleared, then transition
             StartCoroutine(WaitForEnemiesClear());
         }
     }
@@ -175,7 +172,6 @@ public class GameManager_Level2 : MonoBehaviour
 
         foreach (var alien in aliens)
         {
-            // If alien is above the screen (not visible yet), destroy it
             if (alien.transform.position.y > topOfScreen + 0.5f)
             {
                 Destroy(alien.gameObject);
@@ -191,17 +187,12 @@ public class GameManager_Level2 : MonoBehaviour
 
     System.Collections.IEnumerator WaitForEnemiesClear()
     {
-        // Wait until all enemies and bullets are gone
         while (true)
         {
             if (LevelTransition.Instance && LevelTransition.Instance.AreAllEnemiesCleared())
             {
                 Debug.Log("[GameManager_Level2] Enemies cleared! Starting transition...");
-                
-                // Save progress
                 PersistGooAndCheckUnlock();
-                
-                // Start the black hole transition
                 LevelTransition.Instance.StartTransition();
                 yield break;
             }
@@ -212,37 +203,59 @@ public class GameManager_Level2 : MonoBehaviour
 
     public void FreezeWorld()
     {
-        // Disable scrolling backgrounds
         ScrollingBackground[] backgrounds = FindObjectsByType<ScrollingBackground>(FindObjectsSortMode.None);
         foreach (var bg in backgrounds)
         {
             bg.enabled = false;
         }
 
-        // Disable alien spawner
         AlienSpawner alienSpawner = FindFirstObjectByType<AlienSpawner>();
         if (alienSpawner != null)
             alienSpawner.enabled = false;
 
-        // Destroy all remaining aliens
         Alien[] aliens = FindObjectsByType<Alien>(FindObjectsSortMode.None);
         foreach (var alien in aliens)
         {
             Destroy(alien.gameObject);
         }
 
-        // Destroy alien bullets
         AlienBullet[] alienBullets = FindObjectsByType<AlienBullet>(FindObjectsSortMode.None);
         foreach (var bullet in alienBullets)
         {
             Destroy(bullet.gameObject);
         }
 
-        // Destroy any uncollected goo
         Goo[] goos = FindObjectsByType<Goo>(FindObjectsSortMode.None);
         foreach (var goo in goos)
         {
             Destroy(goo.gameObject);
         }
+    }
+
+    public void BossDefeated()
+    {
+        if (isGameOver) return;
+        isGameOver = true;
+
+        if (victorySound && audioSource)
+            audioSource.PlayOneShot(victorySound);
+
+        Debug.Log("[GameManager_Level2] Boss defeated! Victory!");
+
+        if (Player_Movement.Instance)
+            Player_Movement.Instance.enableInput(false);
+
+        PersistGooAndCheckUnlock();
+        StartCoroutine(ReturnToMenuAfterVictory());
+    }
+
+    System.Collections.IEnumerator ReturnToMenuAfterVictory()
+    {
+        Debug.Log($"[GameManager_Level2] Returning to menu in {bossVictoryDelay} seconds...");
+        
+        yield return new WaitForSeconds(bossVictoryDelay);
+
+        Debug.Log("[GameManager_Level2] Loading MainMenu...");
+        SceneManager.LoadScene("MainMenu");
     }
 }

@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8792874121604630389}
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 8613188847900333589, guid: 4f819af08d6c64f7c9e278e4b84e95d6, type: 3}
+  m_Sprite: {fileID: -8084601239165252041, guid: 2b34230dc0f6d4163aaf3b65c798db63, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -129,7 +129,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2833135045240006432}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -157,7 +157,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.8
+  m_Radius: 4
 --- !u!60 &2796002392826534921
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -196,7 +196,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.42, y: 1.18}
+    oldSize: {x: 9.28, y: 8.2}
     newSize: {x: 0.16, y: 0.13}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -230,7 +230,7 @@ MonoBehaviour:
   health: 2
   mediumAsteroidPrefab: {fileID: 2833135045240006432}
   smallAsteroidPrefab: {fileID: 2833135045240006432, guid: c49ecbf4c286d4f54933b6954e242968, type: 3}
-  explosionPrefab: {fileID: 653968807126491248, guid: 34f299c97e99046a0953a155343405c6, type: 3}
+  explosionPrefab: {fileID: 653968807126491248, guid: 960abf9be80304068899313968d35d0c, type: 3}
   smallExplosionSound: {fileID: 8300000, guid: a330e9eb6330444709291fd0bb6cd490, type: 3}
   mediumExplosionSound: {fileID: 8300000, guid: 32e32e862c62f44d4bb3f754bac83471, type: 3}
   largeExplosionSound: {fileID: 8300000, guid: dfe4bad99389147b5be145ea16ec593e, type: 3}
@@ -322,7 +322,7 @@ TrailRenderer:
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1.4
+    widthMultiplier: 7
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -340,10 +340,10 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0.98039216, b: 0.8039216, a: 1}
-      key1: {r: 1, g: 0.5019608, b: 0, a: 0}
+      key0: {r: 0.2941177, g: 0, b: 0.509804, a: 1}
+      key1: {r: 0.2941177, g: 0, b: 0.509804, a: 0}
       key2: {r: 0.2, g: 0, b: 0, a: 0}
-      key3: {r: 1, g: 1, b: 1, a: 0}
+      key3: {r: 0.2, g: 0, b: 0, a: 0}
       key4: {r: 1, g: 1, b: 1, a: 0}
       key5: {r: 1, g: 1, b: 1, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}

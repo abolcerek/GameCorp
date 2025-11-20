@@ -20,24 +20,33 @@ public class GameManager : MonoBehaviour
 
     [Header("Rewards")]
     public int sessionShards = 0;
-    public TMPro.TextMeshProUGUI shardsHudText; // optional in-game HUD
+    public TMPro.TextMeshProUGUI shardsHudText;
     public int missileUnlockThreshold = 25;
 
     const string TotalShardsKey = "TotalShards";
     const string MissilesUnlockedKey = "MissilesUnlocked";
 
-
     void Awake()
     {
-    Instance = this;
-    audioSource = gameObject.AddComponent<AudioSource>();
-    audioSource.volume = 0.5f;
+        Instance = this;
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.volume = 0.5f;
     }
 
     void Start()
     {
+        // FIX: Ensure time is running and player can move!
+        Time.timeScale = 1f;
+        
         lives = startingLives;
         UpdateUI();
+        
+        // FIX: Enable player input when level starts!
+        if (Player_Movement.Instance)
+        {
+            Player_Movement.Instance.enableInput(true);
+            Debug.Log("[GameManager] Player input ENABLED on start!");
+        }
     }
 
     public void SetLives(int value)
@@ -88,9 +97,6 @@ public class GameManager : MonoBehaviour
 
         PlayerPrefs.Save();
     }
-    
-
-
 
     private void GameOver()
     {
@@ -98,18 +104,15 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
 
         Debug.Log("Game Over!");
-        Player_Movement.Instance.enableInput(false);
+        
+        if (Player_Movement.Instance)
+            Player_Movement.Instance.enableInput(false);
 
         FreezeWorld();
-
-        // Save session shards + unlocks before leaving the scene
         PersistShardsAndCheckUnlock();
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        
+        SceneManager.LoadScene("MainMenu");
     }
-
-
-
 
     public void RestartGame()
     {
@@ -123,37 +126,32 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
 
         Debug.Log("Time's up! Level Complete!");
-        Player_Movement.Instance.enableInput(false);
+        
+        if (Player_Movement.Instance)
+            Player_Movement.Instance.enableInput(false);
 
         FreezeWorld();
-
         PersistShardsAndCheckUnlock();
-
-        // ✅ Send player back to main menu after winning
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        
+        SceneManager.LoadScene("MainMenu");
     }
-
 
     public void FreezeWorld()
     {
-    ScrollingBackground[] backgrounds = FindObjectsByType<ScrollingBackground>(FindObjectsSortMode.None);
-    foreach (var bg in backgrounds)
-    {
-        bg.enabled = false;
+        ScrollingBackground[] backgrounds = FindObjectsByType<ScrollingBackground>(FindObjectsSortMode.None);
+        foreach (var bg in backgrounds)
+        {
+            bg.enabled = false;
+        }
+
+        FallingAsteroid[] asteroids = FindObjectsByType<FallingAsteroid>(FindObjectsSortMode.None);
+        foreach (var a in asteroids)
+        {
+            Destroy(a.gameObject);
+        }
+
+        AsteroidSpawner spawner = FindFirstObjectByType<AsteroidSpawner>();
+        if (spawner != null)
+            spawner.enabled = false;
     }
-
-    FallingAsteroid[] asteroids = FindObjectsByType<FallingAsteroid>(FindObjectsSortMode.None);
-    foreach (var a in asteroids)
-    {
-        Destroy(a.gameObject);
-    }
-
-    AsteroidSpawner spawner = FindFirstObjectByType<AsteroidSpawner>();
-    if (spawner != null)
-        spawner.enabled = false;
-    }
-
-
-
-
 }
