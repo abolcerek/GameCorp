@@ -1763,6 +1763,8 @@ MonoBehaviour:
   - {fileID: 616841649}
   - {fileID: 532179875}
   lifeLostSound: {fileID: 8300000, guid: 75f92ac4a27d3476bb90f754e2e66a90, type: 3}
+  level1Music: {fileID: 8300000, guid: 18f9990d94a1f4c9da5fbad7721782eb, type: 3}
+  musicVolume: 0.5
   sessionShards: 0
   shardsHudText: {fileID: 0}
   missileUnlockThreshold: 5
@@ -2058,8 +2060,8 @@ MonoBehaviour:
   spawnHeightOffset: 1
   edgePadding: 0.1
   gameDuration: 60
-  mediumAsteroidTime: 20
-  largeAsteroidTime: 40
+  mediumAsteroidTime: 10
+  largeAsteroidTime: 25
 --- !u!4 &1726357320
 Transform:
   m_ObjectHideFlags: 0

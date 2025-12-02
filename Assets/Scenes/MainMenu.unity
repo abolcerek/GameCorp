@@ -169,6 +169,8 @@ MonoBehaviour:
   shopEquipShieldButton: {fileID: 0}
   missileUnlockThreshold: 5
   shieldUnlockThreshold: 5
+  menuMusic: {fileID: 8300000, guid: aee32ed1feb5240c8a1318dc575f3240, type: 3}
+  musicVolume: 0.5
 --- !u!4 &125932795
 Transform:
   m_ObjectHideFlags: 0
@@ -6206,7 +6208,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -510433770661272162, guid: d83de9d3265dd4ed98ab2eff9c600a09, type: 3}
+  m_Sprite: {fileID: 1151057470581432066, guid: 09dc1ee9f2eaf4d1d8c272d5dd195cd6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

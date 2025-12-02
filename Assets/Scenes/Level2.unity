@@ -481,6 +481,8 @@ MonoBehaviour:
   - {fileID: 303898863}
   - {fileID: 42366011}
   lifeLostSound: {fileID: 8300000, guid: 75f92ac4a27d3476bb90f754e2e66a90, type: 3}
+  level2Music: {fileID: 8300000, guid: a00b7e036c6954f8b880f44a138492da, type: 3}
+  musicVolume: 0.5
   sessionGoo: 0
   gooHudText: {fileID: 0}
   shieldUnlockThreshold: 5
@@ -1440,7 +1442,7 @@ MonoBehaviour:
   spawnRate: 1.5
   spawnHeightOffset: 1.5
   edgePadding: 0.5
-  gameDuration: 20
+  gameDuration: 60
 --- !u!4 &509828243
 Transform:
   m_ObjectHideFlags: 0

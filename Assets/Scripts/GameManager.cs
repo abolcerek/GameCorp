@@ -18,6 +18,13 @@ public class GameManager : MonoBehaviour
     public AudioClip lifeLostSound;
     private AudioSource audioSource;
 
+    [Header("Background Music")]
+    public AudioClip level1Music;
+    [Range(0f, 1f)]
+    public float musicVolume = 0.5f;
+
+    private AudioSource musicSource;
+
     [Header("Rewards")]
     public int sessionShards = 0;
     public TMPro.TextMeshProUGUI shardsHudText;
@@ -25,6 +32,7 @@ public class GameManager : MonoBehaviour
 
     const string TotalShardsKey = "TotalShards";
     const string MissilesUnlockedKey = "MissilesUnlocked";
+    const string Level2UnlockedKey = "Level2Unlocked";
 
     void Awake()
     {
@@ -47,6 +55,24 @@ public class GameManager : MonoBehaviour
             Player_Movement.Instance.enableInput(true);
             Debug.Log("[GameManager] Player input ENABLED on start!");
         }
+
+        // Play level music
+        PlayLevelMusic();
+    }
+
+    void PlayLevelMusic()
+    {
+        if (level1Music == null) return;
+
+        // Create separate AudioSource for music
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.clip = level1Music;
+        musicSource.volume = musicVolume;
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+        musicSource.Play();
+
+        Debug.Log("[GameManager] Level 1 music playing");
     }
 
     public void SetLives(int value)
@@ -133,7 +159,13 @@ public class GameManager : MonoBehaviour
         FreezeWorld();
         PersistShardsAndCheckUnlock();
         
-        SceneManager.LoadScene("MainMenu");
+        // Unlock Level 2 when Level 1 is completed
+        PlayerPrefs.SetInt(Level2UnlockedKey, 1);
+        PlayerPrefs.Save();
+        Debug.Log("[GameManager] Level 2 UNLOCKED!");
+        
+        // Go to transition scene instead of directly to menu
+        SceneManager.LoadScene("TransitionScene");
     }
 
     public void FreezeWorld()

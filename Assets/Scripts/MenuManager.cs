@@ -20,6 +20,9 @@ public class MenuManager : MonoBehaviour
     public string Level1 = "Level1";
     public string Level2 = "Level2";
 
+    // Level unlock key
+    const string Level2UnlockedKey = "Level2Unlocked";
+
     // ===== SHOP UI =====
     [Header("Shop UI - Missile")]
     public Image shopMissileIcon;            // Unlocked missile image (shown when unlocked)
@@ -39,6 +42,13 @@ public class MenuManager : MonoBehaviour
     public int missileUnlockThreshold = 25;
     public int shieldUnlockThreshold = 15;   // NEW: Goo needed for shield
 
+    [Header("Background Music")]
+    public AudioClip menuMusic;
+    [Range(0f, 1f)]
+    public float musicVolume = 0.5f;
+
+    private AudioSource musicSource;
+
     // PlayerPrefs keys (must match GameManager)
     const string TotalShardsKey = "TotalShards";
     const string TotalGooKey = "TotalGoo";           // NEW
@@ -54,6 +64,48 @@ public class MenuManager : MonoBehaviour
     {
         ShowMain();
         RefreshShopUI();
+        PlayMenuMusic();
+        UpdateLevelButtons();
+    }
+
+    void UpdateLevelButtons()
+    {
+        // Check if Level 2 is unlocked
+        bool level2Unlocked = PlayerPrefs.GetInt(Level2UnlockedKey, 0) == 1;
+
+        if (level2Button != null)
+        {
+            level2Button.interactable = level2Unlocked;
+            
+            // Optional: Visual feedback for locked button
+            var buttonText = level2Button.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null && !level2Unlocked)
+            {
+                buttonText.text = "Level 2 (Locked)";
+            }
+        }
+
+        Debug.Log($"[MenuManager] Level 2 unlocked: {level2Unlocked}");
+    }
+
+    void PlayMenuMusic()
+    {
+        if (menuMusic == null) return;
+
+        // Create or get AudioSource
+        musicSource = GetComponent<AudioSource>();
+        if (musicSource == null)
+        {
+            musicSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        musicSource.clip = menuMusic;
+        musicSource.volume = musicVolume;
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+        musicSource.Play();
+
+        Debug.Log("[MenuManager] Menu music playing");
     }
 
     void RefreshShopUI()
@@ -134,6 +186,8 @@ public class MenuManager : MonoBehaviour
         SetActiveSafe(panelControls, false);
         SetActiveSafe(panelShop, false);
         SetActiveSafe(panelCustomize, false);
+        
+        UpdateLevelButtons();
     }
 
     public void ShowControls()
@@ -168,9 +222,11 @@ public class MenuManager : MonoBehaviour
         PlayerPrefs.DeleteKey("TotalGoo");
         PlayerPrefs.DeleteKey("MissilesUnlocked");
         PlayerPrefs.DeleteKey("ShieldUnlocked");
+        PlayerPrefs.DeleteKey(Level2UnlockedKey);
         PlayerPrefs.Save();
 
         RefreshShopUI();
+        UpdateLevelButtons();
 
         Debug.Log("Progress reset!");
     }

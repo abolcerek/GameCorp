@@ -19,6 +19,13 @@ public class GameManager_Level2 : MonoBehaviour
     public AudioClip lifeLostSound;
     private AudioSource audioSource;
 
+    [Header("Background Music")]
+    public AudioClip level2Music;
+    [Range(0f, 1f)]
+    public float musicVolume = 0.5f;
+
+    private AudioSource musicSource;
+
     [Header("Level 2 Rewards - Goo")]
     public int sessionGoo = 0;
     public TMPro.TextMeshProUGUI gooHudText;
@@ -56,6 +63,24 @@ public class GameManager_Level2 : MonoBehaviour
             Player_Movement.Instance.enableInput(true);
             Debug.Log("[GameManager_Level2] Player input ENABLED on start!");
         }
+
+        // Play level music
+        PlayLevelMusic();
+    }
+
+    void PlayLevelMusic()
+    {
+        if (level2Music == null) return;
+
+        // Create separate AudioSource for music
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.clip = level2Music;
+        musicSource.volume = musicVolume;
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+        musicSource.Play();
+
+        Debug.Log("[GameManager_Level2] Level 2 music playing");
     }
 
     public void SetLives(int value)
