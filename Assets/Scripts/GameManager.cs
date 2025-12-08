@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
-        Debug.Log("Game Over!");
+        Debug.Log("[GameManager] Game Over! Going to AsteroidDeath scene...");
         
         if (Player_Movement.Instance)
             Player_Movement.Instance.enableInput(false);
@@ -137,7 +137,8 @@ public class GameManager : MonoBehaviour
         FreezeWorld();
         PersistShardsAndCheckUnlock();
         
-        SceneManager.LoadScene("MainMenu");
+        // Go to death scene instead of directly to menu
+        SceneManager.LoadScene("AsteroidDeath");
     }
 
     public void RestartGame()

@@ -140,7 +140,10 @@ public class GameManager_Level2 : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
-        Debug.Log("[GameManager_Level2] Game Over!");
+        // Determine which death scene to show based on whether we're in boss fight
+        string deathScene = isBossFight ? "BossDeath" : "AlienDeath";
+        
+        Debug.Log($"[GameManager_Level2] Game Over! Going to {deathScene} scene...");
         
         if (Player_Movement.Instance)
             Player_Movement.Instance.enableInput(false);
@@ -148,7 +151,8 @@ public class GameManager_Level2 : MonoBehaviour
         FreezeWorld();
         PersistGooAndCheckUnlock();
         
-        SceneManager.LoadScene("MainMenu");
+        // Go to appropriate death scene
+        SceneManager.LoadScene(deathScene);
     }
 
     public void RestartGame()
