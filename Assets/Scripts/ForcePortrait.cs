@@ -4,21 +4,23 @@ using UnityEngine.SceneManagement;
 public class ForcePortrait : MonoBehaviour
 {
     [Header("Portrait Settings")]
-    [Tooltip("Desired portrait resolution (Width x Height).")]
+    [Tooltip("Desired portrait aspect ratio (9:16).")]
     public int targetWidth  = 1080;
     public int targetHeight = 1920;
 
-    [Tooltip("Run windowed. (Fullscreen can ignore portrait on desktop.)")]
+    [Header("Display Mode")]
+    [Tooltip("Run in fullscreen mode with pillarboxing (black bars on sides).")]
+    public bool fullscreen = true;
+    
+    [Tooltip("If fullscreen is false, run in windowed mode.")]
     public bool windowed = true;
-
-    [Tooltip("Prevent user from freely resizing the window into landscape.")]
-    public bool enforceEveryFrame = true;
 
     [Tooltip("Keep this enforcer across scene loads.")]
     public bool persistAcrossScenes = true;
 
-    // Cache last known size to avoid spamming SetResolution.
-    private int lastW, lastH;
+    // Target aspect ratio
+    private float targetAspect;
+    private bool temporarilyDisabled = false;
 
     void Awake()
     {
@@ -30,53 +32,149 @@ public class ForcePortrait : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
+        // Calculate target aspect ratio (9:16 = 0.5625)
+        targetAspect = (float)targetWidth / (float)targetHeight;
+
         QualitySettings.vSyncCount = 1;      // optional
         Application.targetFrameRate = 120;   // optional
     }
 
     void Start()
     {
-        ApplyPortraitResolution(true);
-        // In case some UI/layout needs one frame before sizing:
-        Invoke(nameof(ApplyPortraitResolution), 0.05f);
+        ApplyFullscreenWithAspectRatio();
     }
 
     void Update()
     {
-        if (!enforceEveryFrame) return;
-
-        // If window flipped to landscape (width > height), force it back.
-        if (Screen.width > Screen.height || Screen.width != lastW || Screen.height != lastH)
+        // Check if screen resolution changed
+        if (Screen.width != Screen.currentResolution.width || 
+            Screen.height != Screen.currentResolution.height)
         {
-            ApplyPortraitResolution();
+            ApplyFullscreenWithAspectRatio();
         }
     }
 
-    private void ApplyPortraitResolution(bool log = false)
+    void LateUpdate()
     {
-        // Keep exact 9:16. If current height is smaller (user dragged), maintain ratio.
-        int w = targetWidth;
-        int h = targetHeight;
-
-        // If user shrank the window, clamp to at least 9:16 shape.
-        if (Screen.height < targetHeight)
+        // Ensure camera rect is maintained every frame
+        // (some systems reset it)
+        if (!temporarilyDisabled && fullscreen)
         {
-            h = Mathf.Max(Screen.height, 600); // avoid tiny windows
-            w = Mathf.RoundToInt(h * 9f / 16f);
+            Camera camera = Camera.main;
+            if (camera != null)
+            {
+                float windowAspect = (float)Screen.width / (float)Screen.height;
+                float currentCameraAspect = camera.rect.width * windowAspect / camera.rect.height;
+                
+                // If camera rect is wrong, reapply
+                if (Mathf.Abs(currentCameraAspect - targetAspect) > 0.01f)
+                {
+                    SetupCamera();
+                }
+            }
+        }
+    }
+
+    private void ApplyFullscreenWithAspectRatio()
+    {
+        if (temporarilyDisabled)
+        {
+            // During video scenes, reset camera to full viewport
+            ResetCamera();
+            return;
         }
 
-        // Ensure portrait shape
-        if (w > h)
+        if (fullscreen)
         {
-            int tmp = w; w = h; h = tmp; // swap if somehow reversed
+            // Get the native screen resolution
+            int screenWidth = Screen.currentResolution.width;
+            int screenHeight = Screen.currentResolution.height;
+
+#if UNITY_EDITOR
+            // In editor, just use current Game view resolution
+            screenWidth = Screen.width;
+            screenHeight = Screen.height;
+            Debug.Log($"[ForcePortrait] Editor mode - Game view: {screenWidth}x{screenHeight}");
+#else
+            // In builds, set fullscreen at native resolution
+            Screen.SetResolution(screenWidth, screenHeight, FullScreenMode.FullScreenWindow);
+            Debug.Log($"[ForcePortrait] Build mode - Setting fullscreen: {screenWidth}x{screenHeight}");
+#endif
+
+            // Always apply camera viewport to maintain portrait aspect ratio
+            SetupCamera();
+        }
+        else
+        {
+            // Windowed mode with exact dimensions
+            Screen.SetResolution(targetWidth, targetHeight, windowed ? FullScreenMode.Windowed : FullScreenMode.FullScreenWindow);
+            
+            // Reset camera to full viewport
+            ResetCamera();
+        }
+    }
+
+    private void SetupCamera()
+    {
+        // Get the main camera
+        Camera camera = Camera.main;
+        if (camera == null) return;
+
+        // Calculate current screen aspect ratio
+        float windowAspect = (float)Screen.width / (float)Screen.height;
+        
+        Debug.Log($"[ForcePortrait] Window aspect: {windowAspect:F4}, Target aspect: {targetAspect:F4}");
+
+        Rect rect = new Rect(0, 0, 1, 1);
+
+        // Compare aspects to determine if we need pillarbox or letterbox
+        if (windowAspect > targetAspect)
+        {
+            // Screen is WIDER than target (landscape screen showing portrait game)
+            // Need PILLARBOX (black bars on left and right)
+            rect.width = targetAspect / windowAspect;
+            rect.x = (1f - rect.width) / 2f;
+            Debug.Log($"[ForcePortrait] Pillarboxing: viewport width = {rect.width:F4}, x offset = {rect.x:F4}");
+        }
+        else
+        {
+            // Screen is TALLER than target (portrait screen, or very tall display)
+            // Need LETTERBOX (black bars on top and bottom)
+            rect.height = windowAspect / targetAspect;
+            rect.y = (1f - rect.height) / 2f;
+            Debug.Log($"[ForcePortrait] Letterboxing: viewport height = {rect.height:F4}, y offset = {rect.y:F4}");
         }
 
-        if (log)
-        {
-            Debug.Log($"[ForcePortrait] Setting resolution to {w}x{h} windowed={windowed}");
-        }
+        camera.rect = rect;
+    }
 
-        Screen.SetResolution(w, h, !windowed ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed);
-        lastW = w; lastH = h;
+    private void ResetCamera()
+    {
+        Camera camera = Camera.main;
+        if (camera == null) return;
+
+        // Full viewport
+        camera.rect = new Rect(0, 0, 1, 1);
+    }
+
+    void OnPreCull()
+    {
+        // Clear the background before rendering (creates the black bars)
+        GL.Clear(true, true, Color.black);
+    }
+
+    // Public methods for video scenes to control pillarboxing
+    public void DisablePillarboxing()
+    {
+        temporarilyDisabled = true;
+        ResetCamera();
+        Debug.Log("[ForcePortrait] Pillarboxing disabled for video playback");
+    }
+
+    public void EnablePillarboxing()
+    {
+        temporarilyDisabled = false;
+        ApplyFullscreenWithAspectRatio();
+        Debug.Log("[ForcePortrait] Pillarboxing re-enabled for gameplay");
     }
 }

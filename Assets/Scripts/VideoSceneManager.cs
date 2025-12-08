@@ -36,11 +36,20 @@ public class VideoSceneManager : MonoBehaviour
     private bool hasTransitioned = false;
     private bool canSkip = false;
     private float startTime;
+    private ForcePortrait forcePortrait;
 
     void Start()
     {
         startTime = Time.time;
         Log("Video scene started");
+
+        // Disable pillarboxing for fullscreen video
+        forcePortrait = FindObjectOfType<ForcePortrait>();
+        if (forcePortrait != null)
+        {
+            forcePortrait.DisablePillarboxing();
+            Log("Disabled pillarboxing for fullscreen video");
+        }
 
         if (videoPlayer == null)
         {
@@ -181,6 +190,13 @@ public class VideoSceneManager : MonoBehaviour
         hasTransitioned = true;
 
         Log($"Loading scene: {nextSceneName}");
+        
+        // Re-enable pillarboxing before loading gameplay scene
+        if (forcePortrait != null)
+        {
+            forcePortrait.EnablePillarboxing();
+            Log("Re-enabled pillarboxing for gameplay");
+        }
         
         // Clean up
         CleanupVideoPlayer();
