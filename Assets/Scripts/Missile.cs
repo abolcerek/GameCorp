@@ -42,7 +42,15 @@ public class Missile : MonoBehaviour
 
         bool hitSomething = false;
 
-        // Check for alien
+        // Check for boss alien
+        var bossAlien = other.GetComponent<BossAlien>();
+        if (bossAlien != null)
+        {
+            bossAlien.TakeDamage(10); // Missiles do 10 damage to boss (not 999)
+            hitSomething = true;
+        }
+
+        // Check for regular alien
         var alien = other.GetComponent<Alien>();
         if (alien != null)
         {

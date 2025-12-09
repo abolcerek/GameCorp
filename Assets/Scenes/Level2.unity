@@ -536,6 +536,8 @@ MonoBehaviour:
   bossSpawnPosition: {x: 0, y: 6, z: -1}
   spawnDelay: 2
   bossSpawnSound: {fileID: 8300000, guid: 98ab3c7339e2f451f8070867acf3e70b, type: 3}
+  bossMusic: {fileID: 8300000, guid: edde879a81f4449c6ac8908be18e9d4f, type: 3}
+  bossMusicVolume: 0.6
   healthBarPrefab: {fileID: 1683793759546965014, guid: 5aee6c20a2a184b719e9e86f15f8098e, type: 3}
   canvas: {fileID: 2075391511}
   bossSpawned: 0

@@ -11,6 +11,12 @@ public class BossSpawner : MonoBehaviour
     public AudioClip bossSpawnSound;  // NEW: Sound plays before boss spawns
     private AudioSource audioSource;
 
+    [Header("Boss Music")]
+    public AudioClip bossMusic;  // Music that plays during boss fight
+    [Range(0f, 1f)]
+    public float bossMusicVolume = 0.6f;
+    private AudioSource musicSource;
+
     [Header("Health Bar")]
     public GameObject healthBarPrefab;  // Assign BossHealthBar prefab
     public Canvas canvas;  // Reference to main Canvas
@@ -41,17 +47,24 @@ public class BossSpawner : MonoBehaviour
             audioSource.volume = 0.8f;
         }
 
-        // Play spawn sound first
+        // STOP LEVEL 2 MUSIC IMMEDIATELY (before boss entrance sound)
+        if (GameManager_Level2.Instance != null)
+        {
+            GameManager_Level2.Instance.StopLevelMusic();
+            Debug.Log("[BossSpawner] Level 2 music stopped for boss entrance");
+        }
+
+        // Play spawn sound (entrance music)
         if (bossSpawnSound && audioSource)
         {
             audioSource.PlayOneShot(bossSpawnSound);
-            Debug.Log("[BossSpawner] Playing boss spawn sound...");
+            Debug.Log("[BossSpawner] Playing boss entrance sound...");
             
             // Calculate delay: use sound length or default delay, whichever is longer
             float soundLength = bossSpawnSound.length;
             float totalDelay = Mathf.Max(spawnDelay, soundLength);
             
-            Debug.Log($"[BossSpawner] Boss will appear in {totalDelay} seconds (after sound)");
+            Debug.Log($"[BossSpawner] Boss will appear in {totalDelay} seconds (after entrance sound)");
             Invoke(nameof(DoSpawnBoss), totalDelay);
         }
         else
@@ -88,6 +101,9 @@ public class BossSpawner : MonoBehaviour
             {
                 bossAlien.healthBar = healthBar;
                 Debug.Log("[BossSpawner] Boss health bar created and connected!");
+                
+                // Trigger screech and music sequence
+                StartCoroutine(BossIntroSequence(bossAlien));
             }
             else
             {
@@ -97,6 +113,61 @@ public class BossSpawner : MonoBehaviour
         else
         {
             Debug.LogWarning("[BossSpawner] No health bar prefab or canvas assigned!");
+        }
+    }
+    
+    System.Collections.IEnumerator BossIntroSequence(BossAlien boss)
+    {
+        // Wait a moment for boss to be visible
+        yield return new WaitForSeconds(0.5f);
+        
+        // Boss screeches (plays hit sound)
+        if (boss.hitSound && audioSource)
+        {
+            audioSource.PlayOneShot(boss.hitSound);
+            Debug.Log("[BossSpawner] Boss screeched!");
+        }
+        
+        // Wait for screech to finish (or a minimum time)
+        float screechDelay = boss.hitSound != null ? boss.hitSound.length : 1f;
+        yield return new WaitForSeconds(screechDelay);
+        
+        // Start boss music
+        StartBossMusic();
+    }
+    
+    void StartBossMusic()
+    {
+        if (bossMusic == null)
+        {
+            Debug.LogWarning("[BossSpawner] No boss music assigned!");
+            return;
+        }
+        
+        // Level 2 music already stopped when entrance sound started
+        // Now start boss battle music
+        
+        // Create music source if needed
+        if (musicSource == null)
+        {
+            musicSource = gameObject.AddComponent<AudioSource>();
+        }
+        
+        musicSource.clip = bossMusic;
+        musicSource.volume = bossMusicVolume;
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+        musicSource.Play();
+        
+        Debug.Log("[BossSpawner] Boss battle music started!");
+    }
+    
+    public void StopBossMusic()
+    {
+        if (musicSource != null && musicSource.isPlaying)
+        {
+            musicSource.Stop();
+            Debug.Log("[BossSpawner] Boss music stopped!");
         }
     }
 

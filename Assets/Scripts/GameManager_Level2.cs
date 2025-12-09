@@ -79,6 +79,16 @@ public class GameManager_Level2 : MonoBehaviour
 
         Debug.Log("[GameManager_Level2] Level 2 music playing");
     }
+    
+    public void StopLevelMusic()
+    {
+        if (musicSource != null && musicSource.isPlaying)
+        {
+            // Fade out or just stop
+            musicSource.Stop();
+            Debug.Log("[GameManager_Level2] Level 2 music stopped for boss fight");
+        }
+    }
 
     public void SetLives(int value)
     {

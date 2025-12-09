@@ -310,6 +310,13 @@ public class BossAlien : MonoBehaviour
 
     IEnumerator DeathSequence()
     {
+        // Stop boss music
+        BossSpawner spawner = FindFirstObjectByType<BossSpawner>();
+        if (spawner != null)
+        {
+            spawner.StopBossMusic();
+        }
+        
         // Play death sound
         if (deathSound && audioSource)
         {
