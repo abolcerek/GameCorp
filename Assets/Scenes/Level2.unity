@@ -488,7 +488,6 @@ MonoBehaviour:
   shieldUnlockThreshold: 5
   levelDuration: 90
   bossVictoryDelay: 6
-  victorySound: {fileID: 8300000, guid: 7a7e9a26d033f4aa3b38f665ab090e72, type: 3}
 --- !u!4 &268421124
 Transform:
   m_ObjectHideFlags: 0
@@ -2604,7 +2603,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 2777877048252714783, guid: 5728307c974bf44888049303c5dfeda8, type: 3}
+  m_Sprite: {fileID: -6779995824163183365, guid: 309d843833eea447e837727f84cae77e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

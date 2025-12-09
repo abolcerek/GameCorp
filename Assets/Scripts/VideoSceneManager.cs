@@ -191,12 +191,8 @@ public class VideoSceneManager : MonoBehaviour
 
         Log($"Loading scene: {nextSceneName}");
         
-        // Re-enable pillarboxing before loading gameplay scene
-        if (forcePortrait != null)
-        {
-            forcePortrait.EnablePillarboxing();
-            Log("Re-enabled pillarboxing for gameplay");
-        }
+        // Don't re-enable pillarboxing here - let ForcePortrait handle it in the new scene
+        // This prevents timing issues with Canvas setup
         
         // Clean up
         CleanupVideoPlayer();

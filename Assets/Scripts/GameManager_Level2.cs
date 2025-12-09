@@ -35,9 +35,6 @@ public class GameManager_Level2 : MonoBehaviour
     public float levelDuration = 90f;
     public float bossVictoryDelay = 3f;
 
-    [Header("Victory")]
-    public AudioClip victorySound;
-
     const string TotalGooKey = "TotalGoo";
     const string ShieldUnlockedKey = "ShieldUnlocked";
 
@@ -266,25 +263,22 @@ public class GameManager_Level2 : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
-        if (victorySound && audioSource)
-            audioSource.PlayOneShot(victorySound);
-
         Debug.Log("[GameManager_Level2] Boss defeated! Victory!");
 
         if (Player_Movement.Instance)
             Player_Movement.Instance.enableInput(false);
 
         PersistGooAndCheckUnlock();
-        StartCoroutine(ReturnToMenuAfterVictory());
+        StartCoroutine(TransitionToVictoryScene());
     }
 
-    System.Collections.IEnumerator ReturnToMenuAfterVictory()
+    System.Collections.IEnumerator TransitionToVictoryScene()
     {
-        Debug.Log($"[GameManager_Level2] Returning to menu in {bossVictoryDelay} seconds...");
+        Debug.Log($"[GameManager_Level2] Waiting {bossVictoryDelay} seconds before victory scene...");
         
         yield return new WaitForSeconds(bossVictoryDelay);
 
-        Debug.Log("[GameManager_Level2] Loading MainMenu...");
-        SceneManager.LoadScene("MainMenu");
+        Debug.Log("[GameManager_Level2] Loading Victory scene...");
+        SceneManager.LoadScene("Victory");
     }
 }

@@ -39,7 +39,8 @@ public class Player_Shooting : MonoBehaviour
     public float stationaryCooldownMultiplier = 1.6f;
 
     private float heat = 0f;
-    private float nextFireAt = 0f;
+    private float nextLaserFireAt = 0f;
+    private float nextMissileFireAt = 0f;
     private bool overheated = false;
 
     private enum AmmoType { Laser, Missile }
@@ -132,7 +133,6 @@ public class Player_Shooting : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             currentAmmo = AmmoType.Laser;
-            nextFireAt = Mathf.Max(nextFireAt, Time.time + 0.1f);
             Debug.Log("[Player_Shooting] Switched to Laser");
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -140,7 +140,6 @@ public class Player_Shooting : MonoBehaviour
             if (missilesUnlocked)
             {
                 currentAmmo = AmmoType.Missile;
-                nextFireAt = Mathf.Max(nextFireAt, Time.time + 0.1f);
                 Debug.Log("[Player_Shooting] Switched to Missile");
             }
             else
@@ -152,29 +151,36 @@ public class Player_Shooting : MonoBehaviour
 
     void HandleShooting()
     {
-        if (overheated)
+        if (overheated && currentAmmo == AmmoType.Laser)
         {
             if (Time.frameCount % 60 == 0)
             {
-                Debug.Log("[Player_Shooting] OVERHEATED! Cannot shoot!");
+                Debug.Log("[Player_Shooting] OVERHEATED! Cannot shoot lasers!");
             }
             return;
         }
 
-        // Check if space is pressed
-        if (Input.GetKey(KeyCode.Space))
+        if (!Input.GetKey(KeyCode.Space))
+            return;
+
+        // Check cooldown based on current ammo type
+        if (currentAmmo == AmmoType.Laser && Time.time < nextLaserFireAt)
         {
-            Debug.Log("[Player_Shooting] SPACE KEY PRESSED!");
-            
-            if (Time.time < nextFireAt)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                Debug.Log($"[Player_Shooting] Cooldown active! Next fire: {nextFireAt}, Current: {Time.time}");
-                return;
+                Debug.Log($"[Player_Shooting] Laser cooldown active! Next fire: {nextLaserFireAt}, Current: {Time.time}");
             }
+            return;
         }
 
-        if (!Input.GetKey(KeyCode.Space) || Time.time < nextFireAt)
+        if (currentAmmo == AmmoType.Missile && Time.time < nextMissileFireAt)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log($"[Player_Shooting] Missile cooldown active! Next fire: {nextMissileFireAt}, Current: {Time.time}");
+            }
             return;
+        }
 
         Debug.Log($"[Player_Shooting] FIRING! Ammo: {currentAmmo}, Prefab: {(currentAmmo == AmmoType.Laser ? bulletPrefab : missilePrefab)}");
 
@@ -187,7 +193,7 @@ public class Player_Shooting : MonoBehaviour
                 float cd = fireCooldown;
                 if (IsStationary())
                     cd *= stationaryCooldownMultiplier;
-                nextFireAt = Time.time + cd;
+                nextLaserFireAt = Time.time + cd;
 
                 heat += heatPerShot;
 
@@ -204,7 +210,7 @@ public class Player_Shooting : MonoBehaviour
             case AmmoType.Missile:
             {
                 Fire(missilePrefab, missileSpeed, missileShootSound);
-                nextFireAt = Time.time + missileCooldown;
+                nextMissileFireAt = Time.time + missileCooldown;
                 break;
             }
         }

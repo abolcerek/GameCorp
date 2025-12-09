@@ -37,6 +37,32 @@ public class ForcePortrait : MonoBehaviour
 
         QualitySettings.vSyncCount = 1;      // optional
         Application.targetFrameRate = 120;   // optional
+        
+        // Listen for scene changes to re-apply pillarboxing if it was disabled
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // If we were temporarily disabled (for video), re-enable for the new scene
+        if (temporarilyDisabled)
+        {
+            Debug.Log($"[ForcePortrait] Scene loaded: {scene.name}, re-enabling pillarboxing");
+            temporarilyDisabled = false;
+            // Wait one frame for scene to fully initialize
+            StartCoroutine(ReapplyAfterSceneLoad());
+        }
+    }
+    
+    System.Collections.IEnumerator ReapplyAfterSceneLoad()
+    {
+        yield return null; // Wait one frame for scene setup
+        ApplyFullscreenWithAspectRatio();
     }
 
     void Start()
