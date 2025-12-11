@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49be56ad220ee45a3af7c7c15c44cee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossAlien
-  maxHealth: 100
+  maxHealth: 275
   moveSpeed: 2
   leftBound: -2
   rightBound: 2
